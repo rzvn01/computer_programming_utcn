@@ -1,1 +1,1 @@
-# utcn_c-_course
+# UTCN C++ COURSE
