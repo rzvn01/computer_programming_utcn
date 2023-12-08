@@ -1,0 +1,649 @@
+
+/*Cacu Razvan lab5 prb 1
+Write a C/C++ application that uses a data structure named Scircle. The structure has an integer
+variable that represents the circle's radius. In the main( ) function that uses the Scircle structure,
+declare 2 Scircle variables (c1 and c2) and calculate the area and the perimeter (using 2 methods) for 2
+circles with the value of the radius read from the keyboard.
+Perform the same operations using a class called Circle (the radius is a private member of the class).
+The class contains, besides those 2 methods defined in the first application for area and perimeter, an
+explicit constructor with 1 parameter, a destructor. Introduce an accessor method in the class,
+getRadius( ), method that allows access to the private radius attribute, to display in the main( ) the
+radius of objects. Define several Circle objects, pointers to the declared objects and references to those
+objects and call the specific methods.
+*/
+
+#include<iostream>
+using namespace std;
+
+struct Scircle {
+        int radius;
+};
+
+float area(int radius) { return (float)3.14 * radius * radius; }
+float perimeter(int radius) {        return (float)2*3.14 * radius;}
+
+class Circle {
+        
+        int radius;
+public: 
+        
+        int  getRadius() {
+                cout << "\n getRadius called ! ";
+                return radius;}
+
+        Circle(int x) {
+                cout << "\nConstructor called !";
+                radius = x;}
+
+        ~Circle()
+        {        cout << "\n Destructor  called ! ";}
+
+        float area() { return (float)3.14 * radius * radius; }
+        float perimeter() { return (float)2 * 3.14 * radius; }
+};
+
+int main()
+{
+        Scircle c1{}, c2{};
+        cout << "\n The radius of the first circle ? ";
+        cin >> c1.radius;
+        cout << "\nThe radius of the second circle ? ";
+        cin >> c2.radius;
+        cout << "\nArea for the first circle : " << area(c1.radius) << " and the perimeter  : " << perimeter(c1.radius);
+        cout << "\nArea for the second circle : " << area(c2.radius) << " and the perimeter  : " << perimeter(c2.radius)<<endl;
+        system("pause");
+        system("cls");
+        Circle c3(5), c4(7), c5(3);
+        
+        cout << "\n The radius of the first circle is :" << c3.getRadius();
+        cout << "\nArea for the first circle : " << c3.area() << " and the perimeter  : " << c3.perimeter();
+        cout << "\n The radius of the second circle is " << c4.getRadius();
+        cout << "\nArea for the second circle : " << c4.area() << " and the perimeter  : " << c4.perimeter();
+        cout << "\n The radius of the third circle is : " << c5.getRadius();
+        cout << "\nArea for the third circle : " << c5.area() << " and the perimeter  : " << c5.perimeter();
+}
+
+
+
+/*Cacu Razvan lab5 prb2 
+Declare a class called String and store it in a file named strClass.h. The methods in the class perform
+the following tasks:
+a. determine the length of the array of characters received as parameter;
+b. determine the index of the last occurence of a certain character in the array;
+c. return the array of characters received as parameter, all letters being transformed into capital
+letters.
+d. return the number of occurences of a certain character;
+*/
+
+/*
+//This is the header file strClass !!
+
+class String {
+
+        char string1[100];
+
+public: 
+        void setArray(char ba[100]) {
+                strcpy_s(string1, ba);
+        }
+        char* getArray() { return string1; }
+        
+        int lenght() {
+                return strlen(string1);
+        }
+        int occurance(char x)
+        {
+                int occ = -1;
+                for (int i{}; i < strlen(string1); i++)
+                        if (x == string1[i])
+                                occ = i;
+                return occ;
+        }
+        char* ret()
+        {
+                for (int i{}; i < strlen(string1); i++)
+                        string1[i]=toupper(string1[i]);
+                return string1;
+
+        }
+        int number_occurance(char x)
+        {
+                int occ = 0;
+                for (int i{}; i < strlen(string1); i++)
+                        if (x == string1[i])
+                                occ++;
+                return occ;
+        }
+
+};
+
+*/
+
+#include<iostream>
+#include<string.h>
+#include"strClass.h"
+using namespace std;
+
+int main()
+{
+
+        String s1;
+        char a[100], b;
+
+        cout << "\n Enter the string : ";
+        cin.getline(a, 100);
+        s1.setArray(a);
+
+        cout << "\nThe lenght is the string is  : "<< s1.lenght() << endl;
+
+        cout << "\nEnter the char's index you want to find : ";
+        cin >> b;
+
+        cout <<"The last index of occurance is  : " <<s1.occurance(b) << endl;
+
+        cout << "\n Enter the char you want to find the number of occurances : ";
+        cin >> b;
+
+        cout << "\nThe number of occurances is : " << s1.number_occurance(b);
+        char*c = s1.ret();
+
+        cout << "\n The capitals string is : ";
+        cout << c;
+
+}
+
+
+/*Cacu Razvan lab5 prb3
+* Write a program that reads from the keyboard an array of maximum 10 characters
+and performs all the operations implemented in the class defined at problem 3. */
+
+#include<iostream>
+#include<string.h>
+#include"strClass.h"
+using namespace std;
+
+/*
+* // The header file is : 
+class String {
+
+        char string1[100];
+
+public:
+        void setArray(char ba[100]) {
+                strcpy_s(string1, ba);
+        }
+        char* getArray() { return string1; }
+
+        int lenght() {
+                return strlen(string1);
+        }
+        int occurance(char x)
+        {
+                int occ = -1;
+                for (int i{}; i < strlen(string1); i++)
+                        if (x == string1[i])
+                                occ = i;
+                return occ;
+        }
+        char* ret()
+        {
+                for (int i{}; i < strlen(string1); i++)
+                        string1[i] = toupper(string1[i]);
+                return string1;
+
+        }
+        int number_occurance(char x)
+        {
+                int occ = 0;
+                for (int i{}; i < strlen(string1); i++)
+                        if (x == string1[i])
+                                occ++;
+                return occ;
+        }
+
+};
+*/
+int main()
+{
+
+        String s1;
+        char a[10], b;
+
+        cout << "\n Enter the string (maximum 10 char!) : ";
+        cin.getline(a, 10);
+
+        s1.setArray(a);
+
+        cout << "\nThe lenght is the string is  : " << s1.lenght() << endl;
+
+        cout << "\nEnter the char's index you want to find : ";
+        cin >> b;
+
+        cout << "The last index of occurance is  : " << s1.occurance(b) << endl;
+
+        cout << "\n Enter the char you want to find the number of occurances : ";
+        cin >> b;
+
+        cout << "\nThe number of occurances is : " << s1.number_occurance(b);
+        char* c = s1.ret();
+
+        cout << "\n The capitals string is : ";
+        cout << c;
+
+}
+
+
+/*Cacu Razvan lab5 prb4
+Write a program that implements a class called Number with an attribute of int type, val. In function
+main(), declare two Number objects and a pointer to one object of this type, used to call a method int
+sum_nr(Number) from the class that will calculate and return the sum of 2 int numbers read from the
+keyboard, associated to the instantiated objects (current, parameter). Implement the method inside and
+outside the class (with different names).
+*/
+
+#include<iostream>
+#include<Windows.h>
+using namespace std;
+#define Time1 1000
+class Number {
+        int first, second;
+public:
+        void setFirst(int a) {
+                first = a;
+        }
+        int getFirst() {
+                return first;
+        }
+        
+        void setSecond(int a) {
+                second = a;
+        }
+
+        int getSecond() {
+                return first;
+        }
+        int sum();
+        int sum2() { return first + second; }
+};
+
+
+
+int Number::sum() {return first + second; } 
+
+
+int main()
+{
+        Number n1, n2;
+        Number* n3 = new (nothrow)Number[1];
+      int value;
+        cout << "Enter the fist number :";
+        cin >> value;
+        n1.setFirst(value);
+        cout << "Enter the second  number :";
+        cin >> value;
+        n1.setSecond(value);
+        cout << "The sum is :  " << n1.sum();
+        cout << "\nPlease wait ...";
+        Sleep(3 * Time1);
+        system("cls");
+
+        cout << "Enter the fist number :";
+        cin >> value;
+        n2.setFirst(value);
+        cout << "Enter the second  number :";
+        cin >> value;
+        n2.setSecond(value);
+        cout << "The sum is :  " << n2.sum();
+        cout << "\nPlease wait ...";
+        Sleep(3 * Time1);
+        system("cls");
+
+        cout << "Enter the fist number :";
+        cin >> value;
+        n3->setFirst(value);
+        cout << "Enter the second  number :";
+        cin >> value;
+        n3->setSecond(value);
+        cout << "The sum is :  " << n3->sum();
+
+}
+
+
+
+/*Cacu Razvan lab5 prb5 
+Define a class that implements the following methods:
+- int plus(int x, int y), which returns the sum of x and y;
+- int minus(int x, int y), which returns the difference between x and y;
+- int inmultit(int x, int y), which returns the result of x multiplied by y;
+- float impartit(int x, int y), which returns the quotient of x and y;
+Write the application that uses this class. Consider also the case that the class contains two int
+attributes, x and y, and the class methods will have no parameters
+*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+
+class Numbers {
+        int x, y;
+public:
+        Numbers(int a=1, int b=2) {
+                cout << "\nConstructor called ...";
+            x = a; 
+                y=b;
+        }
+        
+        ~Numbers() { cout << "\nDestructor called ... "; }
+        void setX(int a) { x = a; }
+        int getX() { return x; }
+        void setY(int a) { y = a; }
+        int getY() { return y; }
+
+        int plus() { return x + y; }
+        int minus() { return x - y; }
+        int inmultit() { return x * y; }
+        float impartit() { return (float)x / y; }
+
+ };
+
+
+int main()
+{
+        int a, b;
+        cout << "\nEnter the value of x : ";
+        cin >> a;
+        cout << "\nEnter the value of y  : ";
+        cin >> b;
+        assert(b != 0);
+        Numbers n1;
+        Numbers n2(a, b);
+        cout << "\nFor implicit parameters .. ";
+        cout << " \nThe sum is : " << n1.plus() << "\nThe difference is : " << n1.minus() << "\nThe product is : " << n1.inmultit() << "\nThe division is :  " << n1.impartit();
+        cout << "\nFor explicit parameters .. ";
+        cout << " \nThe sum is : " << n2.plus() << "\nThe difference is : " << n2.minus() << "\nThe product is : " << n2.inmultit() << "\nThe division is :  " << n2.impartit();
+}
+
+/*Cacu Razvan lab5 prb6 
+Define a class that manages complex numbers. Write the program that uses this class considering 2
+objects and displays the object's characteristics and the results of the defined operations. (Use exemple
+3 with result in the current object)*/
+
+#include<iostream>
+using namespace std;
+
+class Complex {
+        double real, imaginary;
+public:
+        Complex(double x = 0.0, double y = 0.0) {
+                real = x;
+                imaginary = y;
+        }
+        double modul() {
+                return sqrt(real * real + imaginary * imaginary);
+        }
+        
+        void setReal(double x) {
+                real = x;
+        }
+        double getReal() {
+                return real;
+        }
+        void setImaginary(double imaginar) {
+                imaginary = imaginar;
+        }
+        double getImaginary() {
+                return imaginary;
+        }
+        void ad_complex(Complex b) {
+                real += b.real;
+                imaginary += b.imaginary;
+        }
+        
+};
+
+
+int main() {
+        Complex c1, c2;
+        float value;
+        cout << "Enter the real part of the first complex number : ";
+        cin >> value;
+        c1.setReal(value);
+        cout << "Enter the imaginary part of the fist complex number : ";
+        cin >> value;
+        c1.setImaginary(value);
+
+        cout << "Enter the real part of the second complex number : ";
+        cin >> value;
+        c2.setReal(value);
+        cout << "Enter the imaginary part of the second complex number : ";
+        cin >> value;
+        c2.setImaginary(value);
+
+        c1.ad_complex(c2);
+                float a, b;
+        a = c1.getReal();
+        b = c1.getImaginary();
+        cout << "\nThe sum is : "<<a<<"+"<<b<<"i ";
+
+}
+
+/*Cacu Razvan lab5 prb7 
+* Write a program that implements a class named Arithmetics that has two numeric (int, float or
+double) attributes a and b. The class will contai setter and getter methods for attributes. Inside the class,
+implement a method named sum( ). The method difference() that also belongs to the class is
+implemented outside the class, methods that will be called using Arithmetics objects. Create 3 objects
+instantiated from the Arithmetics class and make use of the defined methods. The methods return the
+numerical values corresponding to the operation using the two attributes of the class results that will be
+displayed in main(). For each addition / subtraction operation group, display the values of the object
+attributes using the getter methods*/
+
+
+#include<iostream>
+using namespace std;
+
+class Arithmetics {
+        int a, b;
+public:
+        void setA(int x) { a = x; }
+        int getA() { return a; }
+        void setB(int x) { b = x; }
+        int getB() { return b; }
+        void sum(Arithmetics x) {
+                a += x.a;
+                b += x.b;
+        }
+        void difference(Arithmetics);
+};
+void Arithmetics::difference(Arithmetics x) {
+        a -= x.a;
+        b -= x.b;
+}
+int main() {
+        Arithmetics a1{}, a2{}, a3{};
+        int a, b;
+        cout << "Enter x & y for the first object : ";
+        cin >> a >> b;
+        a1.setA(a);
+        a1.setB(b);
+        cout << "Enter x & y for the second object : ";
+        cin >> a >> b;
+        a2.setA(a);
+        a2.setB(b);
+        cout << "Enter x & y for the third object : ";
+        cin >> a >> b;
+        a3.setA(a);
+        a3.setB(b);
+
+        a1.sum(a2);
+        a = a1.getA();
+        b = a1.getB();
+        cout << "\n After the operations for object 1  x =" << a << " y=" << b;
+        a1.difference(a3);
+        a = a1.getA();
+        b = a1.getB();
+        cout << " \n After the operations for object 1 x = " << a << " y=" << b;
+        a2.sum(a3);
+        
+        a = a2.getA();
+        b = a2.getB();
+        cout << " \nAfter the operations for object 2 x = " << a << " y=" << b;
+}
+
+/*Cacu Razvan lab5 prb8  
+ Starting with the Complex class ex.4, implement the addition, subtraction, multiplication and
+division of complex numbers. The methods can be implemented inside or outside the class. Test the
+defined methods by using them upon some created objects. The methods will return Complex objects
+and in main() with getter methods will be displayed the results.
+*/
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Complex {
+        int real, imaginary;
+public:
+        void setReal(int a) {
+                this->real = a;
+        }
+        int getReal() {
+                return this->real;
+        }
+        void setImaginary(int a) {
+                this->imaginary = a;
+        }
+        int getImaginary() {
+                return this->imaginary;
+        }
+
+        Complex  sum(Complex x) {
+                Complex y;
+                y.real = this->real + x.real;
+                y.imaginary = this->imaginary + x.imaginary;
+                return y;
+        }
+
+     Complex  substract(Complex x) {
+                Complex y;
+                y.real = this->real -x.real;
+                y.imaginary = this->imaginary - x.imaginary;
+                return y;
+        }
+         Complex  product(Complex x) {
+                 Complex y;
+                 y.real = this->real * x.real -this->imaginary * x.imaginary;
+                 y.imaginary = this->imaginary * x.real + this->real * x.imaginary;
+                 return y;
+         }
+         Complex division(Complex y){ 
+                 Complex x;
+                 x.real = (((this->real) * (y.real)) + ((this->imaginary) * (y.imaginary))) / (pow(y.real, 2) + pow(y.imaginary, 2));
+                 x.imaginary = (((y.real) * (this->imaginary)) - ((this->real) * (y.imaginary))) / (pow(y.real, 2) + pow(y.imaginary, 2));
+                 return x;
+         }
+};
+
+int main()
+{
+        Complex x,y,z;
+        int a, b;
+        cout << "\nenter the real part of the first complex number : ";
+        cin >> a;
+        cout << "\nenter the imaginary part of the first complex number :";
+        cin >> b;
+        x.setReal(a);
+        x.setImaginary(b);
+        cout << "\nenter the real part of the second complex number : ";
+        cin >> a;
+        cout << "\nenter the imaginary part of the second complex number :";
+        cin >> b;
+        y.setReal(a);
+        y.setImaginary(b);
+        z = x.sum(y);
+        cout << "\nThe sum of the 2 complex numbers is : " << z.getReal() << " + " << z.getImaginary() << "i ";
+        z = x.substract(y);
+        cout << "\nThe difference  of the 2 complex numbers is : " << z.getReal() << " + " << z.getImaginary() << "i ";
+        z = x.product(y);
+        cout << "\nThe product  of the 2 complex numbers is : " << z.getReal() << " + " << z.getImaginary() << "i ";
+        z = x.division(y);
+        cout << "\nThe division  of the 2 complex numbers is : " << z.getReal() << " + " << z.getImaginary() << "i ";
+
+}
+
+
+/*Cacu Razvan lab5 perb 9 
+Declare a class named Fraction that has two private integer attributes a and b representing a
+fraction's numerator and denominator. Define two setter and getter methods for the class's attributes.
+Create 2 Fraction instances and display the initial attributes and the ones established after using the
+setter methods. Define a method named simplify( ) that determines and displays all the common
+dividers of the nominator and denominator, simplifies the fraction and prints in the method the final
+result (new fraction numerator/ denominator) .
+*/
+
+#include<iostream>
+using namespace std; 
+
+class Fraction {
+        int a, b;
+
+public : 
+        void setA(int x) {
+                a = x;
+        }
+        int getA() { 
+                return a; }
+        void setB(int x) {
+                b = x;
+        }
+        int getB() {
+                return b;
+        }
+        void simplify();
+
+};
+
+
+
+int main()
+{   
+        Fraction x,y;
+        int a, b;
+        
+        cout << "\nThe initial value of the nominator: " << x.getA();
+        cout << "\nThe initial value of the denominator : " << x.getB();
+
+        cout << "\n Enter value for the nominator : ";
+        cin >> a;
+        y.setA(a);
+        cout << "\n Enter value for the denominator : ";
+        cin >> b;
+        y.setB(b);
+
+        cout << "\n The value of the nominator after  : " << y.getA();
+        cout << "\n The value of the denominator after : " << y.getB();
+
+        y.simplify();
+
+
+
+}
+void Fraction::simplify() {
+        int aux, gcd = 1;
+        if (a > b)
+                aux = b;
+        else aux = a;
+
+        cout << "\nThe common dividers are : ";
+        for (int i = 1; i <= aux; i++)
+                if (a % i == 0 && b % i == 0)
+                {
+                        cout << i << " ";
+                        gcd = i;
+                }
+        a /= gcd;
+        b /= gcd;
+
+        cout << "\nThe new fraction simplified is : " << a << "/" << b;
+
+}

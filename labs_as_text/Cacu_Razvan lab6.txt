@@ -1,0 +1,633 @@
+
+/*Cacu Razvan lab 6 prb1 
+Write a C++ application that implements a class called F1Pilot. The class defines the private
+variables name (array of characters), team (array of characters), age (int), best_time (int) and
+pole_position_nr(int). As public members, the class contains mutator/setter and
+accessor/getter methods for each of the class's attributes.
+In function main( ), create 3 different instances of the F1Pilot class and use the seter methods
+for initializing each object's data with the corresponding information read from the keyboard.
+Using the getter methods, display all the data related to the pilot that has the best time.*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+
+using namespace std;
+
+
+class F1Pilot {
+        char name[50], team[50];
+        int age, best_time, pole_position_nr;
+
+public : 
+        void setName(char x[50]) {
+                strcpy(this->name,x);
+        }
+                char* getName(){
+                        return this->name; }
+                void setTeam(char x[50]) {
+                        strcpy(this->team, x);
+                }
+                char* getTeam() {
+                        return this->team;
+                }
+
+                void setAge(int x){ 
+                        this->age = x;
+                }
+                int getAge() {
+                        return this->age; }
+                void setBest_time(int x){
+                        this->best_time = x;
+                }
+                int getBest_time() {
+                        return this->best_time;
+                }
+                void setPole_position_nr(int x) {
+                        this->pole_position_nr= x;
+                }
+                int getPole_position_nr() {
+                        return this->pole_position_nr;
+                }
+};
+
+
+int main()
+{
+        F1Pilot* x{};
+        x = new (nothrow) F1Pilot[3];
+        int best, a;
+        char b[50];
+        for (int i{}; i < 3; i++)
+        {
+                
+                cout << "\n\nData of the player " << i + 1;
+                
+                cout << "\nName: ";
+                cin.getline(b, 50);
+                x[i].setName(b);
+                cout << "\nTeam: ";
+                cin.getline(b, 50);
+                x[i].setTeam(b);
+                cout << "\nAge : ";
+                cin >> a;
+                x[i].setAge(a);
+                cout << "\n Best time : ";
+                cin >> a;
+                x[i].setBest_time(a);
+                cout << "\nPole position number : ";
+                cin >> a;
+                x[i].setPole_position_nr(a);
+
+                if (i == 0)
+                        best = x[i].getBest_time();
+
+                if (best > x[i].getBest_time())
+                        best = x[i].getBest_time();
+                getchar();
+        }
+
+
+        cout << "\nThe best time is : " << best;
+}
+
+
+
+/*Cacu Razvan lab6 prb2 
+Modify example 2 so that the code can be launched in execution considering the private class
+attribute and appropriate public get/set methods. In main(), instantiate an object from the class
+that will be modified and then accessed, displaying also the result.
+*/
+
+#include <iostream>
+using namespace std;
+class Test2 {
+        int x;
+public: 
+
+        Test2() {
+                x = 0;
+                cout << "\nConstructor called ...";
+        }~Test2()
+        {
+                cout << "\nDestructor called ...";
+        } 
+        void setX(int a) {
+                this->x = a;
+        }
+        int getX() {
+                return this->x;
+        }
+
+};
+int main() {
+        Test2 ob1; 
+        int a;
+        cout << "\nEnter a value for x : ";
+        cin >> a;
+
+        ob1.setX(a);
+        a = ob1.getX();
+        cout << "\nThe getter method returned : " << a;
+
+}
+
+
+
+/*Cacu Razvan lab6 prb3 
+Starting from the example that uses Matrix class, consider as private attributes the matrix
+given by a double pointer to allocate an array of pointers to the rows of the matrix (or, simple
+pointer to the contiguous dynamic allocation of the matrix), and two private attributes of type
+int for the number of rows and columns. The two-parameter constructor will dynamically
+allocate space for the array by initializing the elements with 0. Implement an explicit
+destructor to free up the matrix space. Define a public method void setElement(int r, int c, int
+v) that will set an element with the value v, on row r and column c. Declare a global function
+void readMatrix(Matrix m) that will have as parameter a matrix object that will have the
+dimensions validated in main() so that the dimensions are correct if they are >=1 and <= 10.
+The function will read the elements of the matrix from the keyboard (it will also use the public
+method setElement()). The method displayMatrix() from the class will be defined as a global
+function just like readMatrix() considering the getElement() public method. The method of
+displaying a column will not validate the column number, the column being validated in
+main().
+Fill in the written code specific methods for:
+- displaying the elements from the main diagonal of the matrix, in case the matrix is square;
+if not, display a significant message.
+- displaying the elements which are below the secondary diagonal.
+- displaying a matrix that has identical dimensions with the original matrix and its elements
+can have as possible values 0's (if the corresponding element is less than a previously
+read value of the threshold) or 1 (otherwise), and check if the matrix is rare, > = 67% of
+the elements are zero);
+Redo the application in which you consider the getElement() and setElement() private
+methods and the readMatrix() and displayMatrix() functions, public member methods within
+the class.
+*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+
+class Matrix {
+        int** m, rows, collumns;
+        void setElement(int, int, int);
+        int  getElement(int, int);
+public: 
+        Matrix(int ,int);
+        ~Matrix();
+        void setRows(int x) { rows = x; }
+        int getRows() { return rows; }
+        void setCollumns(int x) { collumns = x; }
+        int getCollumns() { return collumns; }
+        void mainDiagonal();
+        void readMatrix();
+        void belowSecondaryDiagonal();
+        void printMatrix();
+        void rareCheck(int);
+};
+
+void readMatrix(int, int, Matrix);
+void displayMatrix(int, int, Matrix);
+void mainDiagonal(int, int, Matrix);
+int main()
+{
+        int rows, collumns, value;
+        cout << "Number of rows : ";
+        cin >> rows;
+        cout << "\nNumber of collumns : ";
+        cin >> collumns;
+        Matrix m1(rows, collumns);
+        m1.setRows(rows);
+        m1.setCollumns(collumns);
+        m1.readMatrix();
+        m1.printMatrix();
+        //readMatrix(rows, collumns, m1);
+        m1.mainDiagonal();
+        m1.belowSecondaryDiagonal();
+        cout << "\nSet the comparation value : ";
+        cin >> value;
+        m1.rareCheck(value);
+}
+
+Matrix::Matrix(int rows,int collumns)
+{
+        cout << "\nConstructor called... ";
+        m = (int**)calloc(rows,sizeof(int*));
+        for (int i{}; i < rows; i++)
+                m[i] = (int*)calloc(collumns, sizeof(int));
+
+}
+
+Matrix::~Matrix()
+{
+                (m == NULL)
+                        ? cout << "\nDestructor called for NULL pointer ! .."
+                        : cout << "\nDestructor called ... ";
+                for (int i = 0; i < rows; ++i)
+                        delete[] m[i];
+                delete[] m;
+}
+
+void Matrix::setElement(int v, int r , int c)
+{
+        this->m[c][r] = v;
+}
+
+int Matrix::getElement(int r,  int c){
+        return this->m[r][c];
+}
+
+ /*void readMatrix(int rows, int collumns, Matrix x)
+{
+        assert(rows >= 1 && rows <= 10);
+        assert(collumns >= 1 && collumns <= 10);
+        int v;
+        for (int i{}; i < rows; i++) {
+                for (int j{}; j < collumns; j++) {
+                        cout << "\n Enter the element [" << i << "][" << j << "] ";
+                        cin >> v;
+                        x.setElement(v, i, j);
+                }
+        }
+}
+*/
+
+void Matrix::readMatrix()
+{
+        assert(rows >= 1 && rows <= 10);
+        assert(collumns >= 1 && collumns <= 10); 
+        for (int i{}; i < rows; i++) {
+                for (int j{}; j < collumns; j++) {
+                        cout << "\n Enter the element [" << i << "][" << j << "] ";
+                        cin >> m[i][j];
+                }
+        }
+
+
+}
+void Matrix::printMatrix()
+{
+        for (int i{}; i < rows; i++) {
+                for (int j{}; j < collumns; j++)
+                        cout << m[i][j] << " ";
+                cout << endl;
+        }
+
+
+}
+void Matrix::mainDiagonal() {
+
+        if (rows != collumns)
+                cout << "\nThe matrix is not square  ! ";
+        else {
+                cout << "The elements from the main diagonal are : ";
+                for (int i{}; i < rows; i++) {
+                        for (int j{}; j < collumns; j++)
+                                if (i == j)
+                                        cout <<m[i][j] << " ";
+                }
+        }
+
+}
+void Matrix::belowSecondaryDiagonal() {
+        int aux;
+        (rows >= collumns)
+                ? aux = collumns
+                : aux = rows;
+        cout << "\nThe elements below the secondary diagonal are : ";
+                for (int i{}; i < rows; i++) {
+                        for (int j{}; j < collumns; j++)
+                                if (i+j>aux-1)
+                                        cout << m[i][j] << " ";
+                }
+        }
+
+void Matrix::rareCheck(int value) {
+
+        int** arr, sum = 0;
+        arr = (int**)calloc(rows,sizeof(int*));
+        for (int i{}; i < rows; i++)
+                arr[i] = (int*)calloc(collumns , sizeof(int));
+
+        for (int i{}; i < rows; i++) {
+                for (int j{}; j < collumns; j++)
+                {
+                        if (m[i][j] > value)
+                                arr[i][j] = 1;
+                        cout << arr[i][j] << " ";
+                        sum += arr[i][j];
+                 } 
+                cout << endl;
+        }
+
+        float result = (float)(sum * 100 / (rows * collumns));
+        (result >= 67)
+                ? cout << "\nThe matrix is rare ! "
+                : cout << "\nThe matrix is not rare !";
+
+}
+
+
+
+/*Cacu Razvan lab6 prb4 
+* Write a C++ class that has as private attribute a date field. The date is defined as a structure
+declared outside the class and it contains the fields day � int, month � int, year � int. The class
+contains public accessor/getter and mutator/setter methods that can use the private information
+as date structure, for all fields from the structure. The class also contains two public methods
+that:
+- test the validity of the stored date.
+- write into a file all the dates from the current year that precede chronologically the class
+stored date based only on the year attribute as a modified attribute.
+In the main( ) function, after instantiating the class and after reading from the keyboard all the
+components of a date, call the member methods and then verify the obtained results.
+
+*/
+
+
+#include<iostream>
+#include<assert.h>
+#include<fstream>
+
+using namespace std;
+
+struct AuxDate {
+        int year, month, day;
+};
+
+class Date {
+        AuxDate data;
+public: 
+        void setDatayear(int x) { data.year = x; }
+        int getDataYear() { return data.year; }
+        void setDataMonth(int x) { data.month = x; }
+        int getDataMonth() { return data.month; }
+        void setDataDay(int x) { data.day = x; }
+        int getDataDay() { return data.day; }
+        bool dateVerify();
+        bool stop(int, int,Date);
+};
+
+int main() {
+
+           ofstream myFile("dates.txt");
+        Date d1,d2;
+        int d, m, y;
+        cout << "Enter the date (day/month/year) : ";
+        cin >> d >> m>> y;
+        d1.setDataDay(d);
+        d1.setDataMonth(m);
+        d1.setDatayear(y);
+        if (d1.dateVerify())
+                cout << "\nThe date is ok !";
+        else 
+                cout << "\nThe date is not ok !";
+        
+        bool flag=true;
+   
+        for(int i=1;i<=12&&flag==true;i++)
+   {
+           for (int j = 1; j <= 31&&flag==true; j++) {
+                   d2.setDataDay(j);
+                   d2.setDataMonth(i);
+                   d2.setDatayear(y);
+                   if (i >= m && j - d >= 0)
+                           flag = false;
+                   if (d2.dateVerify() && flag==true)
+                           myFile << j << "-" << i << "-" << y << "\n";
+
+                   
+           }
+           myFile << "\n";
+   }
+        myFile.close();
+
+}
+
+bool Date::stop(int day, int month,Date d1) {
+        bool flag = true ;
+        if (month > d1.getDataMonth())
+                flag = false; 
+        if (month >= d1.getDataMonth() && day >= d1.getDataDay())
+                flag = false;
+        return flag;
+}
+bool Date::dateVerify()
+{
+        bool year = true, month = true, day = true, y2 = true;
+        if (data.year > 2022)
+                year= false;
+                
+        (data.year % 4 == 0)
+                ? y2 = true
+                : y2 = false;
+        if (this->data.month > 12)
+                month = false;
+        if (y2) {
+                if (this->data.month == 2)
+                        if (this->data.day > 29)
+                                day = false;
+        }
+        else 
+                if (this->data.month == 2)
+                        if (this->data.day > 28)
+                                day = false;
+        if (this->data.month % 2 == 0)
+        {
+                if (this->data.day > 30)
+                        day = false;
+        } 
+        else if (this->data.day > 31)
+                day = false;
+        
+        if (year && month && day)
+                return true;
+        else return false;
+                
+
+}
+
+
+
+/*Cacu Razvan lab6 prb6
+Write a C++ application that defines a class called Triangle. The class contains as private int
+variables the triangle's sides a, b and c, a constructor with parameters and adequate setter and
+getter methods. The class will contain methods that will calculate the shape's area and
+perimeter. Write a distinct method that will print a specific message if the triangle is right.
+Develop a private method with parameters that will determine whether the values of a, b and c
+form a triangle. The method will be called in setter methods.*/
+
+#include<iostream>
+using namespace std;
+
+class Triangle {
+
+        int a, b, c;
+        bool isTriangle(int, int, int);
+
+public: 
+        void setA(int x) { a = x;        }
+        int  getA() { return a; }
+        void setB(int x) {b = x;}
+        int getB() { return b; }
+        void setC(int x) { c = x; }
+        int getC() { return c; }
+        bool getValidity() { return this->isTriangle(a, b, c); }
+        Triangle(int, int, int);
+        float getArea();
+        int getPerimeter() { return a+b+c; }
+
+};
+
+int main() {
+
+        int side1, side2, side3;
+        cout << "\n Enter the value of the triangle's sides : ";
+        cin >> side1 >> side2 >> side3;
+        Triangle t(side1, side2, side3);
+        t1.setA(side1);
+        t1.setB(side2);
+        t1.setC(side3);
+        
+        bool flag = t1.getValidity();
+        if (!flag)
+                cout << "\nThe triangle  doesnt exist !";
+        else {
+                cout << "\nThe triangle exist !";
+                cout << "\n The perimeter of the triangle is : " << t1.getPerimeter();
+                cout << "\nThe area of the triangle is : " << t1.getArea();
+        }
+}
+
+bool Triangle::isTriangle(int side1 , int side2 , int side3 )
+{
+        bool flag = 0;
+        if ((side1 + side2) > side3)
+        {
+                if ((side2 + side3) > side1)
+                {
+                        if ((side1 + side3) > side2)
+                        {
+                                
+                                flag = 1;
+                        }
+                }
+        }
+        return flag;
+}
+
+Triangle::Triangle(int x=3 , int y=4, int z=5)
+{
+        a = x;
+        b = y;
+        c = z;
+}
+
+float Triangle::getArea()
+{
+        float s, area;
+        s = (a + b + c) / 2;
+        area = (float)sqrt(s * (s - a) * (s - b) * (s - c));
+        return area;
+}
+
+
+/*Cacu Razvan lab6 prb7 
+Write a class named Safe that has as private attributes the cipher (pin, 4 int digits) and the
+amount of money of double type. Implement the private methods getMoney( ) and setMoney(
+). The public methods putInSafe( ) and getFromSafe( ) will call the previous private methods
+only if the cipher sent as parameter matches the value stored inside the class. Display a
+message if the cipher is not correct.
+*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+
+class Safe {
+        int cipher;
+        double money_ammount;
+public:
+        void setMoney_ammount(double x) { money_ammount = x; }
+        double getMoney_ammount() { return money_ammount; }
+        void setCipher(int x) { this->cipher = x; }
+        int getChiper() { return this->cipher; }
+        void moneyWithdraw(int x) { money_ammount -= x; }
+        void moneyDeposit(int x) { money_ammount += x; }
+        
+  };
+
+int main() {
+        Safe s1;
+        int a,x,count =0;
+        bool flag=1;
+                char choice2;
+        cout << "\nPlease enter a cipher(4 digits ) : ";
+                cin >> a;
+                int y = a;
+                while (a != 0)
+                {  
+                        a /= 10;
+                        count++;
+                }
+                if (count != 4)
+                {
+                        cout << "The pin must be of 4 digits !";
+                                exit(1);
+                }
+        cout << "\nCipher registred !";
+
+        s1.setCipher(y);
+        s1.setMoney_ammount(1000);
+        system("cls");
+        cout << "\nPlease enter your pin : ";
+        cin >> x;
+        system("cls");
+        if (x==s1.getChiper())
+                cout << "\nPin correct !";
+        else {
+                cout << "\nPin incorect !";
+                exit(1);
+        }
+        do
+        {
+                
+                        int t, test[4];
+                        cout << "\n 1- Withdraw money .\n2-Deposit money . \n3-Check your balance . \n";
+                        cin >> t;
+                        switch (t) {
+                        case 1:
+                        {  int x;
+                        system("cls");
+                        cout << "\n You have : " << s1.getMoney_ammount() << " $ ";
+                        cout << "\nEnter the ammount you want to withdraw : ";
+                        cin >> x;
+                        assert(x <= s1.getMoney_ammount());
+                        s1.moneyWithdraw(x);
+                        cout << "\nTransaction succesfull !";
+                        break; }
+
+                        case 2: {
+                                int x;
+                                system("cls");
+                                cout << "\n You have : " << s1.getMoney_ammount() << " $ ";
+                                cout << "\nEnter the ammount you want to deposit: ";
+                                cin >> x;
+                                s1.moneyDeposit(x);
+                                cout << "\nTransaction succesfull !";
+                                break; }
+                        case 3:
+                        {   system("cls");
+                                cout << "\nYour balance : " << s1.getMoney_ammount() << " $ ";
+                                break;
+
+                        }
+                        default: break;
+
+                        }
+        
+                
+                cout << "\nDo you want to do other action ? ";
+                        cin >> choice2;
+                        choice2 = toupper(choice2);
+        } while (choice2 == 'Y');
+        cout << "\n Thank you !";
+}

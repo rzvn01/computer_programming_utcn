@@ -1,0 +1,130 @@
+
+/*Cacu Razvan lab13 prb1 
+Write a program that uses the seekg( ) method for mid-file positioning and then displays the
+file's content, starting with this position. The filename is read from the command line.
+*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<fstream>
+
+using namespace std;
+
+
+int main(int argc, char* argv[])
+{
+        FILE* p_file = NULL;
+        p_file = fopen(argv[1], "rb");
+        fseek(p_file, 0, SEEK_END);
+        int size = ftell(p_file);
+        fclose(p_file);
+
+        ifstream myfile(argv[1]);
+        myfile.seekg(size/2, ios::beg);
+         char c = myfile.get();
+        cout << c;
+        
+        
+}
+
+
+
+/*Cacu Razvan lab13 prb2 
+Write a program that uses the write( ) method for writing some character arrays into a file.
+Display the file's content using the get( ) method. The filename is read from the keyboard.
+*/
+
+#include<iostream>
+#include<fstream>
+using namespace std;
+
+int main() {
+
+        char filename[20], text[20];
+        cout << "\nEnter the name of the file : ";
+        cin.getline(filename, 20);
+
+        ofstream myfile; 
+        ifstream file;
+        cout << "\n text : ";
+        cin.getline(text, 20);
+        myfile.open(filename);
+        file.open(filename);
+        myfile.write(text,20);
+        myfile.close();
+        char c = file.get();
+        while (c != '\0')
+        {
+                cout << c;
+                c = file.get();
+        }
+}
+
+
+/*Cacu Razvan lab13 prb3
+Write a C++ application that reads a file's content using the read( ) method. The obtained data
+is displayed on the screen. Check the system's state after each reading operation. The filename
+is read from the command line
+*/
+
+#include<iostream>
+#include<fstream>
+
+using namespace std;
+
+
+int main(int argc, char* argv[])
+{
+        ifstream myfile;
+        char arr[1];
+        myfile.open(argv[1]);
+        myfile.read(arr, 1);
+        while (myfile.good()) {
+                cout << endl<< arr[0];
+                cout << "\nThe file is ok !";
+                myfile.read(arr, 1);
+        }
+}
+
+
+
+/*Cacu Razvan lab13 prb4
+Write a C++ application that opens a binary file for reading. The filename is read from the
+keyboard. Display a message if the file doesn't exist and ask the user to re-enter the filename.
+Assuming that the file contains some agenda records (name, city, phone number) overload the
+insertion and extraction operators for reading the file's content and for displaying it on the
+screen
+*/
+
+#include<iostream>
+#include<fstream>
+using namespace std;
+
+int main() {
+        cout << "\nenter the  name :";
+        char name[20];
+        cin.getline(name, 20);
+        ifstream myfile;
+        myfile.open(name, ios::binary);
+        if (myfile.good())
+                cout << "\nThe file was opened !";
+        else while (!myfile.good()) {
+                cout << "\nThe file was not opened !\n enter the name again ";
+                cin.getline(name, 20);
+                myfile.open(name, ios::binary);
+                if (myfile.good())
+                        cout << "\nThe file was opened !";
+        }
+        myfile.close();
+        myfile.open(name);
+        char arr[20];
+        cout << "\nThe name is : ";
+        myfile.getline(arr, 20);
+        cout << arr;
+        cout << "\nThe city is : ";
+        myfile.getline(arr, 20);
+        cout << arr;
+        cout << "\nThe phone number is : ";
+        myfile.getline(arr, 20);
+        cout << arr;
+}

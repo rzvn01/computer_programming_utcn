@@ -1,0 +1,1013 @@
+
+/*Modify example 3 in order to allow the addition of two CPunctText points. The name of the
+new point will be created from the names of the compounding points. Add a method that
+returns the distance from a point to origin. Modify the class so that you remove the afis ()
+method by using appropriate getter methods instead. Also remove the lungime_sir attribute by
+appropriately modifying the class methods. */
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string.h>
+
+using namespace std;
+const int dim = 20;
+class CPunctText
+{
+    int x;
+    int y;
+    char* name;
+
+public:
+
+    CPunctText();
+
+    CPunctText(int ix, int iy, const char* sText = "Punct");
+
+    CPunctText(const CPunctText& pct);
+
+    void addPunct(CPunctText p)
+    {
+        this->x += p.x;
+        this->y += p.y;
+        strcpy(this->name, p.name);
+        strcat(this->name, p.name);
+    }
+
+    double distance()
+    {
+        return sqrt(x * x + y * y);
+    }
+    void setX(int a) { x = a; }
+    int getX()  { return x;   }
+    void setY(int a) { y = a; }
+    int getY()  {  return y;  }
+    
+    void setName(char* x) { strcpy(name, x); }
+    char* getName()    {   return name;    }
+
+    ~CPunctText() {
+        cout << "\n Destructor called";
+    
+    };
+
+
+};
+CPunctText::CPunctText()
+{
+    cout << "\n Called constructor without parameters !";
+    x = y = 0;
+    name = new (nothrow) char[dim];
+}
+CPunctText::CPunctText(int b, int c, const char* a)
+{
+    cout << "\n Called constructor with parameters ";
+    name = new (nothrow) char[sizeof(a) + 1];
+    x = b;
+    y = c;
+    strcpy(name, a);
+}
+CPunctText::CPunctText(const CPunctText& p1)
+{
+    cout << "\n Copy contructor !";
+    name = new (nothrow) char[sizeof(p1.name) + 1];
+    x = p1.x;
+    y = p1.y;
+    strcpy(name, p1.name);
+}
+
+int main()
+{
+    CPunctText p1(1, 2, "Punct1 ");
+    CPunctText p2(p1); 
+    CPunctText p3 = p2; 
+    CPunctText p4(-5, 8);
+    cout << "\n Data of the second point  x:  " << p2.getX() << " y: " << p2.getY() << " name : " << p2.getName();
+   cout << "\n Data of the fourth point  x:  " << p4.getX() << " y: " << p4.getY() << " name : " << p4.getName();
+
+    p2.addPunct(p4);
+    cout << "\n Data of the second point  x:  " << p2.getX() << " y: " << p2.getY() << " name : " << p2.getName();
+    cout << "\nThe distance from the second point to  the origin is :  " << p2.distance();
+}//main
+
+
+
+
+/*Cacu Razvan lab7 prb2 
+Write a C/C++ application that models in OOP a real numbers one dimensional array.
+Instantiate two objects of this class with the same length n and store in a third one the results
+of subtracting each of the two real number arrays' elements. If the source arrays have different
+lengths, the result has the length of the shortest array*/
+
+#include<iostream>
+using namespace std;
+
+class RealNumber {
+        int* arr{};
+        int lenght=1;
+public: 
+        RealNumber(int lenght) { // explicit constructor
+                
+                arr = new(std::nothrow) int[lenght];
+        }
+        RealNumber() {};//implicit constructor 
+
+        ~RealNumber()
+        {
+                if (this->arr != NULL)
+                        delete[] arr;
+        }
+
+        void setLenght(int aux) { lenght = aux; }
+        int getLenght() { return this->lenght; }
+        void setArr(int* x);
+        int* getArr() { return this->arr; }
+        int* substract(int* arr,int*arr2);
+
+
+};
+
+int* readArray(int lenght );  // i like to name the variables in headers 
+void printArray(int * arr  ,int lenght);
+
+int main() {
+        int size1, size2;
+        cout << "Enter the size for the first array : ";
+        cin >> size1;
+        cout << "Enter the size for the second array : ";
+        cin >> size2;
+        int aux;
+        (size1 > size2)
+                ? aux = size2
+                : aux = size1;
+
+        RealNumber first(size1), second(size2), third(aux);
+        first.setLenght(size1);
+        second.setLenght(size2);
+        third.setLenght(aux);
+
+        first.setArr(readArray(first.getLenght()));
+        second.setArr(readArray(second.getLenght()));
+
+        cout << "\n The elements of the first Obj are : ";
+        printArray(first.getArr(),first.getLenght());
+        cout << "\nThe elements of the second Obj are : ";
+        printArray(second.getArr(),second.getLenght());
+        int* arr1 = first.getArr(), * arr2 = second.getArr();
+        third.setArr(third.substract(arr1,arr2));
+        cout << "\nThe elements after the substraction are  : ";
+        printArray(third.getArr(),third.getLenght());
+        cout << " and the  lenght of the  array is : " << third.getLenght();
+}
+void RealNumber::setArr(int* aux)
+{
+        for (int i{}; i < this->lenght; i++)
+                arr[i] = aux[i];
+}
+
+int* RealNumber::substract(int* arr,int* arr2){ 
+        
+        int *s = new(nothrow)int[this->getLenght()];
+        for (int i{}; i < this->getLenght(); i++)
+                s[i] = arr[i] - arr2[i];
+        return s;
+}
+
+int* readArray(int lenght) 
+{
+        int* arr = new(nothrow)int[lenght];
+        cout << "\nEnter the elements of the array : ";
+        for (int i{}; i < lenght; i++)
+                cin >> arr[i];
+        return arr;
+        
+}
+
+void printArray( int*arr,int lenght)
+{
+        for (int i{}; i < lenght; i++)
+                cout << arr[i] << " ";
+}
+
+
+
+
+/*Cacu Razvan lab7 prb3 
+Create a class named Student that has as private attributes the name, surname, some marks
+(array 7 int values), the group.Allocate the necessary amount of memory for storing n 
+students. Determine the average mark with a method from the class for each student and use
+it for sorting the students. Display the ordered array (name, surname, group, average_mark).
+The destructor will display a message.
+*/
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+using namespace std;
+
+class Student {
+        char name[30], surname[30];
+        int marks[7];
+        int group;
+        float average;
+public:
+         void setName(char* x) { strcpy(name, x); }
+         char* getName(void) { return name; }
+
+        void setSurname(char* x) { strcpy(surname, x); }
+        char* getSurname(void) { return surname; }
+
+        void setMarks(int* arr) {
+                for (int i{}; i < 7; i++)
+                        marks[i] = arr[i];
+        }
+        int* getMarks(void) { return marks; }
+
+        void setGroup(int x) { group = x; }
+        int getGroup(void) { return group; }
+
+        void setAverage(void) {
+                int sum = 0;
+                for (int i{}; i < 7; i++)
+                        sum += marks[i];
+                average = (float)sum / 7;
+        }
+        float getAverage(void) { return average; }
+        ~Student() {
+                cout << "\nDestructor called !";
+        }
+}*arr; 
+
+int student_sort(const void* a, const void* b);
+
+int main(void) {
+        int number;
+        char aux[30];
+        int val;
+        cout << "\nEnter the numbe of students : ";
+        cin >> number;
+
+        arr = new Student[number];
+
+        for (int i{}; i < number; i++)
+        {
+                getchar();
+                cout << "\n\tStudent #" << i + 1 << "\n\n";
+                cout << "\n Name ";
+                cin.getline(aux, 30);
+                arr[i].setName(aux);
+                cout << "\n Surname ";
+                cin.getline(aux, 30);
+                arr[i].setSurname(aux);
+                cout << " \n Enter the marks : ";
+                int marks[7];
+                for (int i{}; i < 7; i++)
+                        cin >> marks[i];
+                arr[i].setMarks(marks);
+                cout << " \nGroup : ";
+                cin >> val;
+                arr[i].setGroup(val);
+                arr[i].setAverage();
+
+        }
+        qsort(arr, number, sizeof(arr[0]), student_sort);
+        for (int i{};i<number;i++)
+        {
+                cout << "\n\t Data of student #" << i + 1 << "\n\n";
+                cout << "\nName : " << arr[i].getName();
+                cout << "\nSurname: " << arr[i].getSurname();
+                cout << "\nThe marks are: ";
+                int* a = arr[i].getMarks();
+                for (int i{}; i < 7; i++)
+                        cout << a[i] <<" ";
+                cout << "\nThe group is : " << arr[i].getGroup();
+                cout << "\nThe average is : " << arr[i].getAverage();
+
+        }
+}
+
+int student_sort(const void* a, const void* b)
+{
+        Student* x = (Student*)a;
+        Student* y = (Student*)b;
+        if (strcmp(x->getName(), y->getName()) != 0)
+                return strcmp(x->getName(), y->getName());
+        else if (strcmp(x->getSurname(), y->getSurname()) != 0)
+                return strcmp(x->getSurname(), y->getSurname());
+        else if (x->getGroup() != y->getGroup())
+        {
+                if (x->getGroup() > y->getGroup())
+                        return x->getGroup() - y->getGroup();
+                else return y->getGroup() - x->getGroup();
+        }
+        else if (x->getAverage() > y->getAverage())
+                return -1;
+        else if (x->getAverage() < y->getAverage())
+                return 1;
+        else return 0;
+
+}
+
+
+
+/*Cacu Razavn lab7 prb4 
+Model in OOP a class named Student containing name, surname the number of marks and the
+marks from the winter session exams specified as an int pointer. Display the name of the
+students who have arears exams and the first three students in the group based on the media
+that will be also displayed*/
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+using namespace std;
+
+class Student {
+        char name[30], surname[30];
+        int *marks;
+        int marks_number;
+        bool arears=false;
+        float average;
+public:
+        void setName(char* x) { strcpy(name, x); }
+        char* getName(void) { return name; }
+
+        void setSurname(char* x) { strcpy(surname, x); }
+        char* getSurname(void) { return surname; }
+
+        void setMarks(int* arr);
+        int* getMarks(void) { return marks; }
+
+        void setMarks_number(int x) { marks_number = x; }
+        int getMarks_number(void) { return marks_number; }
+        
+        void setArears(bool x) {   arears = x;        }
+        bool getArears() {                return arears;        }
+        
+        void setAverage();
+        float getAverage(void) { return average; }
+        
+        ~Student() {
+                cout << "\nDestructor called !";
+        }
+}*arr;
+int avg_fnc(const void* a, const void* b);
+
+int main() {
+
+        int number;
+        char aux[30];
+        int val=1;
+        cout << "\nEnter the numbe of students : ";
+        cin >> number;
+        arr = new Student[number];
+        for (int i{}; i < number; i++)
+        {
+                getchar();
+                cout << "\n\tStudent #" << i + 1 << "\n\n";
+                cout << "\n Name ";
+                cin.getline(aux, 30);
+                arr[i].setName(aux);
+                cout << "\n Surname ";
+                cin.getline(aux, 30);
+                arr[i].setSurname(aux);
+                cout << " \n Enter the number of marks of the student : ";
+                cin >> val;
+                arr[i].setMarks_number(val);
+                cout << " \n Enter the marks : ";
+                int* marks = new(nothrow)int[val];
+                for (int i{}; i < val; i++)
+                        cin >> marks[i];
+                arr[i].setMarks(marks);
+                arr[i].setAverage();
+        }
+        qsort(arr, number, sizeof(arr[0]), avg_fnc);
+        cout << "\n The top 3 students are: ";
+        for (int i{}; i < 3; i++) {
+                cout << "\n\t Data of student #" << i + 1 << "\n\n";
+                cout << "\nName : " << arr[i].getName();
+                cout << "\nSurname: " << arr[i].getSurname();
+                cout << "\nThe marks are: ";
+                int* a = arr[i].getMarks();
+                for (int j{}; j < arr[i].getMarks_number(); j++)
+                        cout << a[j] << " ";
+                cout << "\nThe marks number  is : " << arr[i].getMarks_number();
+                cout << "\nThe average is : " << arr[i].getAverage();
+        }
+        cout << "\n The students with arears are : \n";
+        for (int i{}; i < number ; i++) {
+                if(arr[i].getArears() == true)
+                cout << "\nName : " << arr[i].getName();
+        
+        }
+}
+void Student::setAverage() {
+        int sum = 0;
+        for (int i{}; i < marks_number; i++)
+                sum += marks[i];
+        average = (float)sum / marks_number;
+}
+void Student::setMarks(int* arr) {
+        marks = new(nothrow)int[marks_number];
+        for (int i{}; i < marks_number; i++)
+        {
+                marks[i] = arr[i];
+                if (marks[i] < 5)
+                        arears = true;
+        }
+}
+
+int avg_fnc(const void* a, const void* b)
+{
+        Student* x = (Student*)a, * y = (Student*)b;
+        float z = x->getAverage() - y->getAverage();
+        if (z > 0)
+                return -1;
+        else if(z < 0)
+                return 1;
+        else return 0;
+}
+
+/*Cacu Razvan lab7 prb5 
+Write a C/C++ application that reads a point from the keyboard by giving the x, y and z
+coordinates. Write a method that moves the point with a given distance on each of the three
+axes. Verify if the line between the first and the second position of the point crosses a third
+given point.
+*/
+#include<iostream>
+using namespace std;
+
+
+class Point {
+        int x, y, z;
+public: 
+        Point() {};
+        Point(const Point& p1) { x = p1.x; y = p1.y; z = p1.z; }
+        void setX(int a) { x = a; }
+        int getX() { return x; }
+
+        void setY(int a) { y = a; }
+        int getY() { return y; }
+
+        void setZ(int a) { z = a; }
+        int getZ() { return z; }
+
+        void moveX(int a) { this->x += a; }
+        void moveY(int a) { this->y += a; }
+        void moveZ(int a) { this->z += a; }
+
+        bool is_on_line(Point a, Point b) {
+                float t = (float)(this->x - a.x) / (b.x - a.x);
+                float f = (float)(this->y - a.y) / (b.y - a.y);
+                float v = (float)(this->z - a.z) / (b.z - a.z);
+
+                if (t == f &&f==v)
+                        return true;
+                else return false;
+        }
+
+};
+
+
+int main() {
+        Point p1, p2, p3;
+        int val;
+
+        cout << "\nEnter the point's coordinates \n ";
+        cout << "\n x : ";
+        cin >> val;
+        p1.setX(val);
+        cout << "\n y : ";
+        cin >> val;
+        p1.setY(val);
+        cout << "\n z : ";
+        cin >> val;
+        p1.setZ(val);
+         p2 = p1;
+        cout << "\n Enter the values to move the point  \n";
+        cout << "\nx : ";
+        cin >> val;
+        p1.moveX(val);
+        cout << "\ny : ";
+        cin >> val;
+        p1.moveY(val);
+        cout << "\nz : ";
+        cin >> val;
+        p1.moveZ(val);
+        system("cls"); 
+
+        cout << "\nYour points are : \n";
+        cout << "\n The initial  point : P(" << p2.getX() << "," << p2.getY() << "," << p2.getZ()<<")";
+        cout << "\n The moved  point : O(" << p1.getX() << "," << p1.getY() << "," << p1.getZ() << ")";
+        
+        cout << "\nEnter the third  point's coordinates \n ";
+        cout << "\n x : ";
+        cin >> val;
+        p3.setX(val);
+        cout << "\n y : ";
+        cin >> val;
+        p3.setY(val);
+        cout << "\n z : ";
+        cin >> val;
+        p3.setZ(val);
+        
+        if (p3.is_on_line(p1, p2))
+                cout << "\nThe third point is on the line formed by the first 2 !";
+        else cout << "\nThe third point is not  on the line formed by the first 2 !";
+
+
+}
+
+
+
+/*Cacu Razvan lab7 prb6 
+Define a class called Complex that stores the double variables real, imag and a pointer of
+character type that holds the name of the complex number. Define an explicit constructor with
+2 parameters that have 1.0 as implicit value. The constructor also initializes the pointer with a
+15 characters wide memory zone. Define a copy constructor for this class. Implement the
+mutator/setter and accessor/getter methods for each variable stored inside the class. All the
+operations related to the complex numbers are also emulated using some specific methods. An
+explicit destructor method is also part of the class. Define an array of not more than 10
+complex numbers. Determine the sum of all the numbers in this array and use this value for
+initializing a new instance of the class named complex_sum. Repeat this action for all the rest
+of the operations implemented inside the class.*/
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+
+class Complex {
+        double real, imag;
+        char* name;
+public: 
+        Complex(double a = 1.0f, double b = 1.0f)
+        {
+                real = a;
+                imag = b;
+                name = new(nothrow)char[15];
+        }
+        Complex(const Complex& c1) {
+                real = c1.real;
+                imag = c1.imag;
+                strcpy(name, c1.name);
+        }
+        void setReal(double x) { real = x; }
+        double getReal() { return real; }
+
+        void setImag(double x) { imag = x; }
+        double getImag() { return imag; }
+
+        void setName(char* x) { strcpy(this->name, x); }
+        char* getName() { return name; }
+
+}*arr;
+int main()
+{
+        int number;
+        cout << "\n Enter the number of complex numbers (<10):";
+        cin >> number;
+        assert(number < 10);
+        arr = new (nothrow)Complex[number];
+        int val;
+        char aux[15];
+        double a = 0, b = 0, c = 1, d = 1, e = 0, f = 0;
+        for (int i{}; i < number; i++)
+        {
+                
+                getchar();
+                cout << "Enter the name of the complex  number # " << i + 1 <<"\t";
+                cin >> aux;
+                arr[i].setName(aux);
+                cout << "\nReal part : ";
+                cin >> val;
+                arr[i].setReal(val);
+                cout << "\nImaginary part: "; \
+                        cin >> val;
+                arr[i].setImag(val);
+        
+                        a += arr[i].getReal();
+                        b += arr[i].getImag();
+                        c *= arr[i].getReal();
+                        d *= arr[i].getImag();
+                        e -= arr[i].getReal();
+                        f -= arr[i].getImag();
+                
+        }
+
+        Complex sum, subs, prod;
+        char name_sum[] = "Sum_c", name_sub[] = "Substract_c", name_prod[] = " Product_c";
+        sum.setName(name_sum);
+        subs.setName(name_sub);
+        prod.setName(name_prod);
+        
+        
+        sum.setReal(a);
+        sum.setImag(b);
+        subs.setReal(e);
+        subs.setImag(f);
+        prod.setReal(c);
+        prod.setImag(d);
+
+        cout << "\n Data of the complex sum : ";
+        cout << "\n" << sum.getName() << ":\t" << sum.getReal();
+        if (sum.getImag() >= 0)
+                cout << " + ";
+        cout << sum.getImag() << "i \n";
+
+        cout << "\n Data of the complex difference  : ";
+        cout << "\n" << subs.getName() << ":\t" << subs.getReal();
+        if (subs.getImag() >=0)
+                cout << " + ";
+        cout << subs.getImag() << "i \n";
+
+        cout << "\n Data of the complex product : ";
+        cout << "\n" << prod.getName() << ":\t" << prod.getReal();
+        if (prod.getImag() >= 0)
+                cout << " + ";
+        cout << prod.getImag() << "i \n";
+}
+
+
+/*Cacu Razvan lab7 prb7 
+* Consider a Pair class that has two pointers to int type, * x and * y. Define a constructor no
+parameters that initializes zones with 0, with two parameters that initialize zones with values
+specified as parameters, a constructor with one parameter that calls the two-parameter
+constructor with parameter value, and 0. The class has a copy constructor, a move constructor,
+a destructor (which distinguishes objects that are temporary) and setters and getters that
+properly manage attributes. A sum() method is defined that has a Pair object as a parameter
+and returns a Pair object sum of the current object with the given one as a parameter. The
+class also contains a media() method that returns the double-type arithmetic mean of the
+content from the two attributes. Instantiate 3 objects using no-parameter, one-parameter, 
+twoparameter constructors. Change the values for the no-parameter object with setters. Display
+values from the addresses of the parameters and media value. Display values from the
+attribute addresses of other objects. Add the first two objects into a new result object and
+display the result. Consider appropriate messages in constructors and destructor. Track the
+calls.*/
+
+#include<iostream>
+using namespace std;
+
+class Pair {
+        int* x, * y;
+public: 
+        Pair() {
+                x = new (std::nothrow) int;
+                *x = (int)0;
+                y= new (std::nothrow) int;
+                *y = (int)0;
+                cout << "\nConstructor called without parameters ! "; };
+
+        Pair(int a, int b) { 
+                x = new (std::nothrow) int;
+                *x = a; 
+            y = new (std::nothrow) int; 
+            *y = b; 
+            
+                cout << "\nConstructor called with 2 parameters !"; 
+        };
+
+        Pair(int a) : Pair(a, 0) { cout << "\nConstructor called with 1 parameter !"; };
+        Pair(const Pair& p1) {
+                
+                cout << "\nCalling Copy constructor";
+                x = p1.x;
+            y = p1.y;}
+
+        Pair( Pair && obj)
+        {
+                cout << "\nCalling Move constructor";
+                x = obj.x;
+                y = obj.y;
+                obj.x = NULL;
+                obj.y = NULL;
+        }
+        ~Pair() {
+                cout << "\nCalling destructor ! ";
+
+
+        }
+        void setX(int a) { *x = a; }
+        int getX() { return *x; }
+        void setY(int a){ *y = a ; }
+        int getY() { return *y ; }
+        double media() {
+                return double(*x + *y) / 2;
+        }
+
+        Pair sum(Pair ob) {
+                Pair s;
+                *s.x = *x + *ob.x;
+                *s.y = *y + *ob.y;
+                return s;
+        }
+
+};
+
+int main() {
+        int x, y;
+        
+        Pair p1, p2(5), p3(3, 6);
+        cout << "\nThe values of the first object  : " << p1.getX() << "\t" << p1.getY();
+        cout << "\nThe media of the first object is : " << p1.media();
+
+        cout << "\nThe values of the second object  : " << p2.getX() << "\t" << p2.getY();
+        cout << "\nThe media of the second  object is : " << p2.media();
+
+        cout << "\nThe values of the third object  : " << p3.getX() << "\t" << p3.getY();
+        cout << "\nThe media of the third object is : " << p3.media();
+
+        cout << "\nEnter a value for x : ";
+        cin >> x;
+        p1.setX(x);
+
+        cout << "\nEnter a value for y : ";
+        cin >> y;
+        p1.setY(y);
+        cout << "\nThe values from the first object  : " << p1.getX() << "\t" << p1.getY();
+        cout << "\nThe media of the first object is : " << p1.media();
+
+    Pair sum = p1.sum(p2);
+        cout << "\n The values fo the sum object are : " <<sum.getX() <<"\t" << sum.getY();
+}
+
+
+
+
+/*Cacu Razvan lab7 prb8
+* Consider a class named Fraction that has two private integer attributes a and b for the
+denominator and nominator, two set( ) and get( ) methods and a method simplify( ) that will
+simplify the current calling Fraction object and will return as result a Fraction object.
+simplify( ) method will call a private cmmdc( ) method to simplify the fraction. Define an
+explicit constructor without parameters that initializes a with 0 and b with 1. Define another
+explicit constructor that receives 2 integer parameters. For this constructor is verified if b!=0
+before to be called. Define a method named add_fraction( ) that returns the object obtained by
+adding the current object with the one received as parameter, as a Fraction object. Define in
+the same manner the methods that subtract, multiply and divide two fractions. Instantiate two
+Fraction objects having the corresponding data read from the keyboard. Display the initial
+attributes and the ones obtained after simplifying the fractions. Call the methods that apply the
+implemented arithmetical operations and display the results.*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+class Fraction {
+        int denominator;
+        int nominator; 
+        int cmmdc(int denominator  ,int nominator);
+public : 
+        Fraction() {
+                nominator = 0;
+                denominator= 1;
+        }
+        Fraction(int x, int y) {
+                nominator = x;
+                denominator = y;
+        }
+        void setDenominator(int a) {
+                denominator = a;
+        }
+        int getDenominator() {
+                return denominator; 
+        }
+        void setNominator(int a) {
+                nominator = a;
+        }
+        int getNominator() {
+                return nominator;
+        }
+        Fraction simplify() {
+                Fraction aux;
+                aux.denominator = this->denominator / this->cmmdc(this->denominator,this->nominator);
+                aux.nominator = this->nominator / this->cmmdc(this->denominator, this->nominator);
+                return aux;
+        }
+        void add(Fraction f2);
+        void substract(Fraction f2);
+        void multiply(Fraction f2)
+        {
+                int num = ( this->nominator*f2.nominator);
+                int denom = (this->denominator * f2.nominator);
+                cout << endl << this->nominator << "/" << this->denominator << " * " << f2.nominator << "/" << f2.denominator << " = " << num << "/" << denom;
+        }
+
+};
+int main() {
+        Fraction f1, f2;
+        int val;
+        cout << "\nEnter the nominator of the first fraction : ";
+        cin >> val;
+        f1.setNominator(val);
+        cout << "\nEnter the denominator  of the first fraction : ";
+        cin >> val;        
+        assert(val != 0);
+        f1.setDenominator(val);
+        cout << "\nEnter the nominator of the second fraction : ";
+        cin >> val;
+        f2.setNominator(val);
+        cout << "\nEnter the denominator of the second fraction : ";
+        cin >> val;
+        assert(val != 0);
+        f2.setDenominator(val);
+        f1.add(f2);
+        f1.substract(f2);
+        f1.multiply(f2);
+        Fraction f1Simplified = f1.simplify();
+        cout << "\nThe first fraction is : " << f1.getNominator() << " /" << f1.getDenominator();
+        cout << "\nThe first faction simplified is : " << f1Simplified.getNominator() << " / " << f1Simplified.getDenominator();
+        Fraction f2Simplified = f2.simplify();
+        cout << "\nThe second fraction is : " << f2.getNominator() << " /" << f2.getDenominator();
+        cout << "\nThe second faction simplified is : " << f2Simplified.getNominator() << " / " << f2Simplified.getDenominator();
+}
+
+int Fraction::cmmdc(int denominator, int nominator)
+{
+        int hcf=1;
+        if (denominator > nominator) {
+                int temp = denominator;
+                denominator = nominator;
+                nominator = temp;
+        }
+
+        for (int i = 1; i <= denominator; ++i) {
+                if (nominator % i == 0 && denominator % i == 0) {
+                        hcf = i;
+                }
+        }
+        return hcf;
+}
+
+void Fraction::add(Fraction f2)
+{
+        
+                int lcm = (this->denominator * f2.denominator) / cmmdc(denominator, f2.denominator);
+
+
+                int sum = (this->nominator * lcm / this->denominator + (f2.nominator * lcm / f2.denominator));
+
+
+                int num3 = sum / cmmdc(sum, lcm);
+
+                lcm = lcm / cmmdc(sum, lcm);
+
+                cout << endl<< this->nominator << "/" << this->denominator << " + " << f2.nominator << "/" << f2.denominator << " = " << num3 << "/" << lcm;
+        }
+void Fraction::substract(Fraction f2)
+{
+
+        int lcm = (this->denominator * f2.denominator) / cmmdc(denominator, f2.denominator);
+
+
+        int sum = (this->nominator * lcm / this->denominator - (f2.nominator * lcm / f2.denominator));
+
+
+        int num3 = sum / cmmdc(sum, lcm);
+
+        lcm = lcm / cmmdc(sum, lcm);
+
+        cout<<endl << this->nominator << "/" << this->denominator << " -" << f2.nominator << "/" << f2.denominator << " = " << num3 << "/" << lcm;
+}
+
+
+
+/*Cacu Razvan lab7 prb9
+Considering the previous task add in the Fraction class another attribute consisting in a
+character array pointer (name) that identifies a fraction. The constructor without parameters
+will allocate a max 20 characters memory zone difined with "Unknown", the parameterized
+constructor will have another last implicit parameter initialized with "Unknown" that will
+represent the fraction's name and the reserved space will be twice the string dimension.
+Implement setter and getter methods for the name attribute. Implement a copy constructor and
+a destructor. In the main( ) function create two Fraction objects, one using the constructor
+without parameters and the other using the parameterized constructor. Modify the attributes of
+the first object using setter methods. Create a third object using the copy constructor. Display
+the attributes of this last object using the getter methods..*/
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+class Fraction {
+        int denominator;
+        int nominator; 
+        char* name;
+        int cmmdc(int denominator  ,int nominator);
+public : 
+        Fraction() {
+                nominator = 0;
+                denominator= 1;
+                name = new(nothrow)char[20];
+                strcpy(name,"Unknown");
+        }
+        Fraction(int x, int y,char* a) {
+                nominator = x;
+                denominator = y;
+                name = new(nothrow)char[2 * sizeof(a)];
+                strcpy(name, a);
+        }
+        Fraction(Fraction& f1) {
+                denominator = f1.denominator;
+                nominator = f1.nominator;
+                name = new char[sizeof(f1.name)];
+                strcpy(name, f1.name);
+        }
+        
+        ~Fraction() {
+                cout << "\nDestructor called !";
+                delete (name);
+  }
+        void setDenominator(int a) {
+                denominator = a;
+        }
+        int getDenominator() {
+                return denominator; 
+        }
+        void setNominator(int a) {
+                nominator = a;
+        }
+        int getNominator() {
+                return nominator;
+        }
+        void setName(char* x) {
+                strcpy(name, x);
+        }
+        char* getName() { return name; }
+        Fraction simplify() {
+                Fraction aux;
+                aux.denominator = this->denominator / this->cmmdc(this->denominator,this->nominator);
+                aux.nominator = this->nominator / this->cmmdc(this->denominator, this->nominator);
+                return aux;
+        }
+        void add(Fraction f2);
+        void substract(Fraction f2);
+        void multiply(Fraction f2)
+        {
+                int num = ( this->nominator*f2.nominator);
+                int denom = (this->denominator * f2.nominator);
+                cout << endl << this->nominator << "/" << this->denominator << " * " << f2.nominator << "/" << f2.denominator << " = " << num << "/" << denom;
+        }
+
+};
+int main() {
+        char name[] = "second", name1[]="first";
+        Fraction f1,f2(3,10,name);
+        int val;
+        cout << "\nEnter the nominator of the first fraction : ";
+        cin >> val;
+        f1.setNominator(val);
+        cout << "\nEnter the denominator  of the first fraction : ";
+        cin >> val;        
+        assert(val != 0);
+        f1.setDenominator(val);
+        f1.setName(name1);
+        Fraction f3 = f1;
+
+        cout << "\nThe name of the first is : " << f1.getName() << "  the nominator : " << f1.getNominator() << " the denominator : " << f1.getDenominator();
+        cout << "\nThe name of the second is : " << f2.getName() << "  the nominator : " << f2.getNominator() << " the denominator : " << f2.getDenominator();
+        cout << "\nThe name of the thirs is : " << f3.getName() << "  the nominator : " << f3.getNominator() << " the denominator : " << f3.getDenominator();
+
+}
+
+int Fraction::cmmdc(int denominator, int nominator)
+{
+        int hcf=1;
+        if (denominator > nominator) {
+                int temp = denominator;
+                denominator = nominator;
+                nominator = temp;
+        }
+
+        for (int i = 1; i <= denominator; ++i) {
+                if (nominator % i == 0 && denominator % i == 0) {
+                        hcf = i;
+                }
+        }
+        return hcf;
+}
+
+void Fraction::add(Fraction f2)
+{
+        
+                int lcm = (this->denominator * f2.denominator) / cmmdc(denominator, f2.denominator);
+
+
+                int sum = (this->nominator * lcm / this->denominator + (f2.nominator * lcm / f2.denominator));
+
+
+                int num3 = sum / cmmdc(sum, lcm);
+
+                lcm = lcm / cmmdc(sum, lcm);
+
+                cout << endl<< this->nominator << "/" << this->denominator << " + " << f2.nominator << "/" << f2.denominator << " = " << num3 << "/" << lcm;
+        }
+void Fraction::substract(Fraction f2)
+{
+
+        int lcm = (this->denominator * f2.denominator) / cmmdc(denominator, f2.denominator);
+
+
+        int sum = (this->nominator * lcm / this->denominator - (f2.nominator * lcm / f2.denominator));
+
+
+        int num3 = sum / cmmdc(sum, lcm);
+
+        lcm = lcm / cmmdc(sum, lcm);
+
+        cout<<endl << this->nominator << "/" << this->denominator << " -" << f2.nominator << "/" << f2.denominator << " = " << num3 << "/" << lcm;
+}
+
+

@@ -1,0 +1,637 @@
+
+/*Cacu Razvan lab3 prb2 
+Consider a computing system that monitors the data transfer on a main communication channel that has a
+maximum flow capacity of 40 MBps. The data stream can be shared among max 10 users. The channel's data
+flow is divided automatically by the monitoring program using max 10 (0...9) sub-unitary weights, each of
+them being associated with a user. The weights are entered from the keyboard when the program starts, and
+their sum must be 1. If the weights are entered correctly, generate all the possible solutions for each one of the
+max 10 individual channels, considering that the main channel has the debit between 2MBps and 40 MBps.
+Calculate the solutions with a precision of MBps. The 0 MBps will be assigned for those channels that cannot
+have the minimum of 2MBps. Display the solutions. The implementation can be both recursive and nonrecursive. 
+*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+int pos(int, int, int*, float*);
+void display(int, int*);
+
+
+int main()
+{
+        float w[10];
+        int sol[10];
+        int users, capacity;
+        float ws = 0;
+        cout << "\n The capacity : ";
+        cin >> capacity;
+        assert(capacity >= 2 && capacity <= 40);
+        cout << "The number of users : ";
+        cin >> users;
+        assert(users <= 10 && users >= 1);
+
+        cout << "Wheights for the users : ";
+        for (int i{}; i < users; i++)
+        {
+                cin >> w[i];
+                ws += w[i];
+        }
+        assert(ws == 1);
+        int k = 0;
+        sol[k] = .0f;
+        do
+        {
+                while (sol[k] < capacity)
+                {
+                        sol[k] += 1;
+                        if (k == (users - 1))
+                        {
+                                if (pos(users ,capacity,sol,w)) display(users ,sol);
+                        }
+                        else { k++; sol[k] = 0; }
+                }
+                k--;
+        } while (!(k < 0));
+
+        return 0;
+}
+int pos(int users,int capacity,int* sol,float*w)
+{
+        int count = 0, i = 0;
+        while (i != users)
+        {
+                for (int j = 0; j < users; j++)
+                {
+                        if (round((capacity * w[j])) == sol[i]) count++;
+                }
+                i++;
+        }
+        if (count == users) return 1;
+        else return 0;
+}
+
+void display(int users, int* sol)
+{
+        for (int i{}; i < users; i++)
+                if (sol[i] < 2.0)
+                        cout << " sol =0\t";
+                else cout << " sol = \t " << sol[i];
+        cout << endl;
+}
+
+
+
+/*Cacu Razvan lab3 prb3
+Considerand exemplul legat de problema comis voiajorului, rezolvati aceasta problema considerand cazul in
+care matricea de costuri nu este una simetrica fata de diagonala principala si costurile de deplasare in acelas
+oras pot fi diferite de zero (caz oferte de preturi).
+*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define MAX 7
+int x[MAX], y[MAX];
+int cost[MAX][MAX];
+void cit(int[][MAX], int);
+void afis(int[][MAX], int);
+int max_cost(int[][MAX], int);
+void afis_sol(long, int);
+int posibil(int);
+int main() {
+        int k, n;
+        long cost_M, n_C;
+        printf("Enter dim of cost matrix(no. of cities) <=%d\n", MAX);
+        scanf("%d", &n);
+        printf("Enter and display the cost matrix\n");
+        cit(cost, n);
+        afis(cost, n);
+        cost_M = n * (long)max_cost(cost, n) + 1;//initial max cost
+        printf("initial max cost is= %ld\n", cost_M);
+        k = 0;//first component
+        printf("Enter initial city (0, ..., %d)", n - 1);
+        scanf("%d", &x[k]);
+        k = 1;//next component
+        x[k] = -1;//possible values from 0 and therefore the first value below the possible one
+        do {
+                while (x[k] < n) // there are still possible values for component k
+                {
+                        x[k]++; //pass on to the next value
+                        if (posibil(k)) if ((k == (n - 1)) && (cost[x[n - 1]][x[0]] != 0)) {
+                                // that is, he reached the city n-1 and can return from where he left
+                                n_C = 0;//new cost
+                                for (int i = 0; i < n - 1; i++)n_C += cost[x[i]][x[i + 1]];
+                                n_C += cost[x[n - 1]][x[0]];//total cost total including return
+                                if (n_C < cost_M)for (int i = 0; i < n; i++) { y[i] = x[i]; cost_M = n_C; }
+                                //save new obtained solution , change cost_M
+                        }
+                        else { k++; x[k] = -1; } // pass on to the next component
+                }//while
+                k--; // there are no more values for component k. Return the k-1 component
+        } while (!(k < 1));//I returned more than I could, or k> = 1
+        afis_sol(cost_M, n); //ready solution
+}//main
+int posibil(int k)
+{
+        if (k == 0)return 1;
+        if (cost[x[k - 1]][x[k]] != 0) {//direct road
+                for (int i = 0; i < k; i++)// the city was no longer chosen
+                        if (x[k] == x[i]) return 0;
+                return 1;
+        }
+        return 0;
+}//posibil
+void afis_sol(long fc, int n)
+{
+        for (int i = 0; i < n; i++) //display the current solution and cost
+                printf("%d ", y[i]);
+        printf("\nThe cost is: %ld", fc);
+}//afis_sol
+void cit(int mat[][MAX], int n) {
+        for (int i = 0; i < n ; i++)
+        {
+                 
+                for (int j = 0; j < n; j++)
+                {
+                        printf("Enter elem[%d][%d]= ", i, j);
+                        scanf("%d", &mat[i][j]);                }        }
+}/
+void afis(int mat[][MAX], int n)
+{
+        for (int i = 0; i < n; i++)
+        {
+                for (int j = 0; j < n; j++)
+                        printf("%4d ", mat[i][j]);
+                printf("\n");
+        }
+}
+int max_cost(int mat[][MAX], int n)
+{
+        int max = mat[0][0];
+        for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                        if (mat[i][j] > max)max = mat[i][j];
+        return max;
+}//max_cost
+
+
+
+
+
+/*Cacu Razvan lab3 prb4
+In a software company, some data packets must be broadcasted to n (<=7) subsidiaries, n being entered from
+the keyboard. The subsidiaries are located at different distances and the transmission costs depend on those
+distances. The data packets must reach their destination, irrespective of the existence of a direct connection
+between the main company and a certain subsidiary (use other intermediate subsidiaries if necessary). The
+costs associated to each direct link are entered from the keyboard. Any subsidiary can be considered as the
+transmitting company packets. Determine and display the route that the data packets have to follow in order to
+minimize the total transmission cost. The implementation can be recursive or non-recursive. Use a LUT (Look
+Up Table) to match the values of the obtained solution with matching strings of characters with city names.
+
+*/
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+int cost[7][7], x[7], y[7];
+char LUT[7][50];
+
+int max_cost(int[][7], int);
+int pos(int);
+int main()
+{
+        int k, n;
+        long mcost, ncost;
+        char aux[50];
+        cout << " \n Enter the value of n : ";
+        cin >> n;
+        assert(n <= 7);
+        getchar();
+        for (int i{}; i < n; i++)
+        {
+                
+                cout << "\n New city : ";
+                cin.getline(LUT[i], 50);
+        }
+
+        cout << "\n The cost matrix : ";
+        for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                        cout << "cost[" << i << "][" << j << "] : ";
+                        cin >> cost[i][j];
+                }
+        cout << "The cost matrix is  : \n";
+        for (int i = 0; i < n; i++)
+        {
+                cout << "\t";
+                for (int j = 0; j < n; j++)
+                        cout << cost[i][j] << " ";
+                cout << endl;
+        }
+        mcost = n * (long)max_cost(cost, n) + 1;
+
+        cout << "\nThe initial max cost is : " << mcost;
+        k = 0;
+        cout << "\nThe initial city :";
+        cin >> x[k];
+        k = 1; x[k] = -1;
+        do {
+                while (x[k] < n)
+                {
+                        x[k]++;
+                        if (pos(k)) if ((k == (n - 1)) && (cost[x[n - 1]][x[0]] != 0)) {
+                                ncost = 0;
+                                for (int i = 0; i < n - 1; i++) ncost += cost[x[i]][x[i + 1]];
+                                ncost += cost[x[n - 1]][x[0]];
+                                if (ncost < mcost)for (int i = 0; i < n; i++) { y[i] = x[i]; mcost = ncost; }
+                        }
+                        else { k++; x[k] = -1; }
+                }
+                k--;
+        } while (!(k < 1));
+
+        printf("\nThe route is: ");
+        for (int i = 0; i < n; i++)
+                printf("%s \t", LUT[y[i]]);
+        printf("\nThe cost is: %ld", mcost);
+
+        return 0;
+}
+int max_cost(int mat[][7], int n)
+{
+        int max = mat[0][0];
+        for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                        if (mat[i][j] > max)max = mat[i][j];
+        return max;
+}
+int pos(int k)
+{
+        if (k == 0)return 1;
+        if (cost[x[k - 1]][x[k]] != 0)
+        {
+                for (int i = 0; i < k; i++)
+                        if (x[k] == x[i]) return 0;
+                return 1;
+        }
+        return 0;
+}
+
+/*Cacu Razvan lab3 prb7 */
+
+
+#include <iostream>
+#include <fstream>
+using namespace std;
+#define DIM 2000
+
+int greater(int*, int, int);
+
+int main()
+{
+        int n, x[DIM];
+        ifstream myfile("numbers.txt");
+        
+        for (int i = 0; i < DIM; i++)
+        {
+                fin >> x[i];
+        }
+        cout << "\nThe greatest common divider of the array is:" << greater(x, 0, DIM-1 );
+
+        return 0;
+}
+int greater(int* a, int first, int last)
+{
+    int x = 0, y = 0, gcd = 0;
+    if (first == last){
+        gcd = a[first];
+        return gcd;}
+    else {
+        x = greater(a, first, (first + last) / 2);
+        y = greater(a, (first + last) / 2 + 1, last);
+        if (x < 0)
+         x = -x; 
+        if (y < 0)
+            y = -y;
+        while (x != y){
+            if (x > y)
+            x = x - y;
+            else
+            y = y - x;  }
+        gcd = x;
+        return gcd;
+    }
+}
+
+/*Cacu Razvan lab3 prb8 */
+
+#include <iostream>
+#include <math.h>
+#define f(x) 1/(1+x*x)
+using namespace std;
+#define SIZE 100
+
+int main()
+{
+        int i;
+        float fx = .0f, size, aux, a, b;
+
+        cout << "\nEnter  value of a : "; cin >> a;
+        cout << "\nEnter  value of b : "; cin >> b;
+
+
+        size = (b - a) / SIZE;
+        fx = f(a) + f(b);
+        for (i = 1; i < SIZE; i++)
+        {
+                aux = a + i * size;
+                fx = fx + 2 * (f(aux));
+        }
+
+        cout << "The result of integration is: " <<  fx * size / 2.0f;;
+} 
+
+/*Cacu Razvan lab3 prb 9 
+Write a C/C++ application that generates max 10 integer random values and stores them in an array. Check if
+another randomly generated value belongs to this array, using _lsearch() function*/
+
+#include<iostream>
+using namespace std;
+int cmpfunc(const void* a, const void* b) {
+        return (*(int*)a - *(int*)b);
+}
+
+int main()
+{
+        int arr[11], value, result,size=10;
+        srand(time(NULL));
+        for (int i{};i<10;i++)
+        {
+                arr[i] = rand() % 100+ 1;
+        }
+        value = rand() % 100 + 1;
+        for (int i{}; i < size; i++)
+                cout << arr[i] << "\n";
+        result = (int)_lsearch(&value, arr, (unsigned*)&size, sizeof(int), cmpfunc);
+        (size != 11)
+                ? cout << "The value " << value << " was found in the array "
+                : cout<<"The value  " << value <<" was not found in the array !"  ;
+}
+
+
+/*Cacu Razvan lab3 prb 10
+. Write a C/C++ application that finds and displays the images that represent the closest match to a certain
+searching key. The searching key is stored in each image's header and it is represented using a structure with
+the following fields: a filename (string of characters), a path (string of characters), an intensity resolution
+(integer value) and a dimension in bytes (integer value). Use a different searching technique for each key type.
+The headers are either stored into a file or the correspondent data is read from the keyboard.*/
+
+
+#include<iostream>
+#include<search.h>
+using namespace std;
+
+
+struct Images {
+
+        char filename[30];
+        char path[50];
+        int resolution;
+        int dimension;
+
+}*arr;
+
+int cmp1(const void*, const void*);
+int cmp2(const void*, const void*);
+
+void images_read(int);
+void images_print( int);
+
+int main()
+{
+        Images* result, * result2;
+        int size, key2;
+        char key1[30];
+        cout << "Enter the number of the photos : ";
+        cin >> size;
+
+        arr = new Images[size];
+
+        
+        images_read(size);
+
+        for (int k{}; k < size; k++)
+        images_print(k);
+        getchar();
+        cout << "\n Enter the key1 (filename ) ";
+        cin.getline(key1, 30);
+        result = (Images*)_lfind(&key1, arr, (unsigned*)&size, sizeof(arr[0]), (int(*)(const void*, const void*))cmp1); 
+        if (result != NULL)
+        {
+                cout << "\n  Images found : ";
+                cout << " \n Filename : " << result->filename << " \n Path : " << result->path;
+                cout << " \n Resolution : " << result->resolution << "\n Dimension : " << result->dimension;
+        }
+        else
+                cout << "\nNo images found with the key : " << key1;
+        cout << "\n Enter the second key (resolution): ";
+        cin >> key2;
+        result2 = (Images*)_lfind(&key2, arr, (unsigned*)&size, sizeof(arr[0]), (int(*)(const void*, const void*))cmp2);
+        if (result2!= NULL)
+        {
+                cout << " \n Images found : ";
+                cout << " \n Filename : " << result2->filename << " \n Path : " << result2->path;
+                cout << " \n Resolution : " << result2->resolution << "\n Dimension : " << result2->dimension;
+        }
+        else
+                cout << "\n No images found with the key : " << key2;
+}
+
+void images_read(int size)
+{
+        for (int i{}; i < size; i++) {
+                getchar();
+                cout << "\n \nFilename : ";
+                cin.getline(arr[i].filename, 30);
+                cout << "\n Path : ";
+                cin.getline(arr[i].path, 50);
+                cout << "\nResolution : ";
+                cin >> arr[i].resolution;
+                cout << "\nDimension : ";
+                cin >> arr[i].dimension;
+
+        }
+}
+void images_print( int t)
+{
+        cout << " \n Filename : " << arr[t].filename << " \n Path : " << arr[t].path;
+        cout << " \n Resolution : " << arr[t].resolution << "\n Dimension : " << arr[t].dimension;
+}
+int cmp1(const void* arg1, const void* arg2)
+{
+        char* k = (char*)arg1;
+        Images* s = (Images*)arg2;
+        return strcmp(k, s->filename);
+}
+int cmp2(const void* arg1, const void* arg2)
+{
+        int* i = (int*)arg1;
+        Images* s = (Images*)arg2;
+        return (*i - s->resolution);
+}
+
+
+
+/*Cacu Razvan lab3 prb11 
+Read from the keyboard a one-dimensional array of maximum 20 integer values. Using the binary search
+mechanism, determine if another value a (also read from the standard input) is part of the array. If so
+determine and display all its prime factors.
+*/
+#include<iostream>
+using namespace std;
+bool isprime(int);
+int compareints(const void* a, const void* b)
+{
+        return (*(int*)a - *(int*)b);
+}
+int main()
+{
+        int* arr, size, value, * result;
+        cout << "Size of the array : ";
+        cin >> size;
+        arr = new int[size];
+        
+        cout << "Enter the values  : ";
+        for (int i{}; i < size; i++)
+                cin >> arr[i];
+
+        cout << "The value you want to find : ";
+        cin >> value;
+        result= (int*)bsearch(&value, arr, size, sizeof(int), compareints);
+
+        if (result != NULL)
+        {
+                for (int i{2}; i < value; i++)
+                {
+                        if (value % i == 0 && isprime(i) == true)
+                                cout << " " << i;
+                }
+        }
+
+}
+
+bool isprime(int n)
+{
+        bool flag = true;
+        {
+                for (int i = 2; i <=n / 2; i++)
+                        if (n % i == 0)
+                                flag = false;
+
+
+                                
+                return flag;
+        }
+}
+
+
+
+
+/*Cacu Razvan lab3 prb 12
+Using a file that contains real ordered numbers, look for a value read from the keyboard. The searching method
+will rely on an iterative binary search, the recursive algorithm and the bsearch() library function. Display the
+values read from the file, the value to be searched and the position it was found (if any).
+ */
+
+
+#include<iostream>
+#include<fstream>
+using namespace std;
+
+int binary_iterative(int*, int, int);
+int binary_recursive(int *, int , int , int );
+int cmpfunc(const void* a, const void* b) {
+    return (*(int*)a - *(int*)b);
+}
+
+int main()
+{
+        ifstream myfile("numbers.txt");
+        int value, arr[10],*result,index;
+        
+        cout << "Please enter the value you want to find : ";
+            cin >> value;
+
+        if(myfile.is_open())
+                for (int i{}; i < 10; i++)
+                     myfile >> arr[i];
+        
+         myfile.close();
+
+     index = binary_iterative(arr, 10, value);
+     (index != -1)
+         ? cout << "\nThe value " << value << " was found using the iterative function at position : " << index
+         : cout << "\nThe value " << value << " was not found using the iterative function !";
+     index = binary_recursive(arr, 0,9, value);
+     (index != -1)
+         ? cout << "\nThe value " << value << " was found using the recursive function at position : " << index
+         : cout << "\nThe value " << value << " was not found using the recursive function !";
+     result = (int*)bsearch(&value, arr,10, sizeof(int), cmpfunc);
+     (result != NULL)
+         ? cout << "\nThe value " << value << " was found using the library function "
+         : cout << "\nThe value " << value << " was not found using the library function !";
+
+}
+int binary_iterative(int nums[], int n, int target)
+{
+    int low = 0, high = n - 1;
+    while (low <= high)
+    {
+       
+
+        int mid = (low + high) / 2;    
+        
+
+        
+        if (target == nums[mid]) {
+            return mid;
+        }
+
+        
+        else if (target < nums[mid]) {
+            high = mid - 1;
+        }
+
+        else {
+            low = mid + 1;
+        }
+    }
+    return -1;
+}
+int binary_recursive(int nums[], int low, int high, int target)
+{
+    
+    if (low > high) {
+        return -1;
+    }
+
+
+    int mid = (low + high) / 2;    
+   
+    if (target == nums[mid]) {
+        return mid;
+    }
+
+    else if (target < nums[mid]) {
+        return binary_recursive(nums, low, mid - 1, target);
+    }
+    else {
+        return binary_recursive(nums, mid + 1, high, target);
+    }
+}
+
+
+
+
+

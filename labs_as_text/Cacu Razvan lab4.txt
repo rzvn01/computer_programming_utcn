@@ -1,0 +1,678 @@
+
+/*Cacu Razvan lab4 prb1
+Implement the Bubble-Sort method using a flag indicator and optimize the inner loop. Write the function that
+orders an array of integer values read from the keyboard. Display the original and the sorted arrays.
+*/
+#include<iostream>
+using namespace std;
+void data_print(int);
+void data_read(int);
+void BubbleSort(int);
+int* arr;
+
+int main()
+{
+        int n;
+        cout << "\nEnter the size of the array : ";
+        cin >> n;
+        arr = new int[n];
+        data_read(n);
+        cout << "\nThe nonsorted array is : ";
+        data_print(n);
+        BubbleSort(n);
+        cout << "\nThe sorted array is : ";
+        data_print(n);
+}
+
+
+void data_read(int n)
+{
+        cout << "\nEnter the values of the array  : \n";
+        for (int i{}; i < n; i++)
+                cin >> arr[i];
+
+}
+
+void data_print(int n)
+{
+        for (int i{}; i < n; i++)
+                cout << arr[i] << " ";
+}
+
+
+
+void BubbleSort(int n)
+{
+        int aux;
+        bool sorted = true;
+        while (sorted) {
+                sorted = false;
+                for (int i{}; i < n-1; i++)
+                        
+                                if (arr[i] >arr[i+1])
+                                {
+                                        aux = arr[i];
+                                        arr[i] = arr[i+1];
+                                        arr[i+1] = aux;
+                                        sorted = true;
+                                }
+                
+        } 
+}
+
+
+
+﻿/*Cacu Razvan lab4 prb2
+Modify the program that implements the explicit Quick-Sort algorithm so that it will sort decreasingly the
+initial array of values.*/
+
+#include<iostream>
+using namespace std;
+void data_print(int);
+void data_read(int);
+void quicksort(int*, int, int);
+int* arr;
+
+int main()
+{
+        int n;
+        cout << "\nEnter the size of the array : ";
+        cin >> n;
+        arr = new int[n];
+        data_read(n);
+        cout << "\nThe nonsorted array is : ";
+        data_print(n);
+        quicksort(arr,0,--n);
+        cout << "\nThe sorted array is : ";
+        data_print(++n);
+}
+
+
+void data_read(int n)
+{
+        cout << "\nEnter the values of the array  : \n";
+        for (int i{}; i < n; i++)
+                cin >> arr[i];
+
+}
+
+void data_print(int n)
+{
+        for (int i{}; i < n; i++)
+                cout << arr[i] << " ";
+}
+void quicksort(int* p, int prim, int ultim) {
+        int i, j, pivot, temp;
+        i = prim;
+        j = ultim;
+        pivot = p[ultim];
+        do {
+                while (p[i] > pivot)
+                        i++;
+                while (p[j] < pivot)
+                        j--;
+                if (i < j) {
+                        temp = p[i];
+                        p[i] = p[j];
+                        p[j] = temp;
+                }
+                if (i <= j) {
+                        j--;
+                        i++;
+                }
+        } while (i < j);
+        if (prim < j)
+                quicksort(p, prim, j);
+}
+
+
+
+
+
+/*Cacu Razvan lab4 prb3
+Use the library function "qsort( )" for sorting an array of records that contain a name, a surname, a personal
+identification code and an employment date. The sorting is based on the data stored in some specific fields
+(like name, employment date, etc.).
+*/
+
+
+#include<iostream>
+#include<string>
+#include<assert.h>
+using namespace std;
+
+
+void data_read(int);
+void data_print(int);
+
+struct Records {
+        char name[50];
+        char surname[50];
+        long int code;
+        int year;
+        int day;
+        char month[30];
+        
+}*record;
+
+int cmp_name(const void* a, const void* b) {
+        return strcmp(((Records*)a)->name, ((Records*)b)->name);
+}
+
+int cmp_sname(const void* a, const void* b) {
+        return strcmp(((Records*)a)->surname, ((Records*)b)->surname);}
+int cmp_code(const void* a, const void* b) {
+        return ((Records*)a)->code - ((Records*)b)->code;}
+
+
+int main() {
+
+        int n;
+        cout << "nEnter the numbers of records : ";
+        cin >> n;
+
+        record = new Records[n];
+
+        data_read(n);
+
+        int choice;
+        cout << "\n How you want to sort the arrays : \n1-name\n2-surname\n3-code \n Your choice : ";
+        cin >> choice;
+        assert(choice == 1 || choice == 2 || choice == 3);
+        if(choice==1)
+        qsort(record,n,sizeof(record[0]),cmp_name);
+        else if(choice==2)
+                qsort(record, n, sizeof(record[0]), cmp_sname);
+        else                 
+                qsort(record, n, sizeof(record[0]), cmp_code);
+
+        cout << "\nThe records were sorted !\n  ";
+        data_print(n);
+
+        return 0;
+
+} 
+void data_read(int n)
+{
+        for (int i{}; i < n; i++)
+        {
+                getchar();
+                cout << "\nName : ";
+                cin.getline(record[i].name, 50);
+                cout << "\nSurame : ";
+                cin.getline(record[i].surname, 50);
+                cout << "\n Code : ";
+                cin >> record[i].code;
+                cout << "\n Emp day:";
+                cin >> record[i].day;
+                getchar();
+                cout << "\nEmp month ";
+                cin.getline(record[i].month, 30);
+                cout << "\n Emp year :  ";
+                cin >> record[i].year;
+        }
+}
+void data_print(int n)
+{
+        for (int i{}; i < n; i++)
+        {
+                cout << "\n Name : " << record[i].name << "\n Surname : " << record[i].surname;
+                cout << " \n Code : " << record[i].code  ;
+                cout << "\nEmp Date : " << record[i].day << " " << record[i].month << " " << record[i].year;
+
+        }
+}
+
+
+
+/*Cacu Razvan lab4 ex5 
+Add some new sorting methods to the code presented in the examples area (example 2 - selection sort, shell
+sort, etc.). Read from the keyboard the 
+number of elements from the array and pass it as parameter to each
+sorting function. Compare the working times scored by each implemented sorting algorithm using huge arrays.
+Use comments for displaying method. Enter a timer (1-5 seconds) among the sorting methods in main().
+*/
+#include<iostream>
+int* first, n;
+void quickSort(int, int);
+void bubblesort();
+void randomize();
+void selectionsort();
+void swap(int,int);
+void insertionSort();
+int main()
+{
+        std::cout << "\nEnter the size of the array : ";
+        std::cin >> n;
+        first = new int[n];
+        bubblesort();
+        selectionsort();
+        insertionSort();
+        randomize();
+        clock_t start = clock();
+        quickSort(0, n - 1);
+        clock_t end = clock();
+        double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+        std::cout << "\nQuick sort time : " << cpu_time_used << "seconds .";
+}
+void swap(int* xp, int* yp)
+{
+        int temp = *xp;
+        *xp = *yp;
+        *yp = temp;
+}
+
+void selectionsort()
+{
+        randomize();
+        clock_t start = clock();
+        int i, j, min_idx;
+
+
+        for (i = 0; i < n - 1; i++)
+        {
+        
+                min_idx = i;
+                for (j = i + 1; j < n; j++)
+                        if (first[j] < first[min_idx])
+                                min_idx = j;
+
+                
+                swap(&first[min_idx], &first[i]);
+        }
+        clock_t end = clock();
+        double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+        std::cout << "\nSelection sort time : " << cpu_time_used << "seconds .";
+}
+
+void bubblesort()
+{
+        randomize();
+        clock_t start = clock();
+
+        for (int i = 0; i <n; i++) {
+                for (int j = i + 1; j < n; j++)
+                {
+                        if (first[j] < first [i]) {
+                                int temp = first[i];
+                                first[i] = first[j];
+                                first[j] = temp;
+                        }
+                }
+        }
+        clock_t end = clock();
+        double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+        std::cout << "\nBubble sort time : " << cpu_time_used << "seconds .";
+}
+void randomize()
+{
+        
+        for (int i{}; i < n; i++)
+                first[i] = rand() % 1000 + 1;
+}
+void insertionSort()
+{
+        randomize();
+        clock_t start = clock();
+
+        int i, key, j;
+        for (i = 1; i < n; i++)
+        {
+                key = first[i];
+                j = i - 1;
+
+                while (j >= 0 && first[j] > key)
+                {
+                        first[j + 1] = first[j];
+                        j = j - 1;
+                }
+                first[j + 1] = key;
+        }
+        clock_t end = clock();
+        double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+        std::cout << "\n Insertion  sort time : " << cpu_time_used << "seconds .";
+}
+void quickSort(int prim, int ultim) {
+        
+
+        int i, j, pivot, temp;
+        i = prim;
+        j = ultim;
+        pivot = first[ultim];
+
+        do {
+                while (first[i] < pivot)
+                        i++;
+                while (first[j] > pivot)
+                        j--;
+                if (i < j) {
+                        temp = first[i];
+                        first[i] = first[j];
+                        first[j] = temp;
+                }
+                if (i <= j) {
+                        j--;
+                        i++;
+                }
+        } while (i < j);
+
+        if (prim < j)
+                quickSort(prim, j);
+        if (i < ultim)
+                quickSort(i, ultim);
+
+}
+
+
+
+/*Cacu Razvan lab4 prb6
+Read from the keyboard a one-dimensional array of m integers and an integer value n<m. Split the array in 2
+subarrays as it follows:
+a) the first array will contain the first n elements of the initial array
+b) the second subarray will contain the rest elements of the initial array
+Realize the following operations:
+- sort increasingly the subarrays
+- sort the initial array, by interlacing the sorted subarrays (merge-sort)
+*/
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+std::vector<int> merge(std::vector<int>, std::vector<int>);
+std::vector<int> first, second;
+
+int main()
+{
+        int n, m, value;
+
+        std::cout << "\nThe size of first array : ";
+        std::cin >> n;
+
+        for (int i{}; i < n; i++)
+        {
+                std::cin >> value;
+                first.push_back(value);
+        }
+        std::cout << "\n The size of second array : ";
+        std::cin >> m;
+        for (int i{}; i < m; i++)
+        {
+                std::cin >> value;
+                second.push_back(value);
+        }
+        std::sort(first.begin(), first.end());
+        std::sort(second.begin(), second.end());
+        first = merge(first, second);
+
+        for (auto& i : first)
+        std::cout << i << " ";
+}
+std::vector<int> merge(std::vector<int> left, std::vector<int> right) {
+        int leftCount = 0;
+        int rightCount = 0;
+
+        std::vector<int> results;
+
+        bool useLeft;
+        for (int i = 0; i < left.size() + right.size(); i++) {
+                if (leftCount < left.size()) {
+                        if (rightCount < right.size()) {
+                                useLeft = (left[leftCount] < right[rightCount]);
+                        }
+                        else {
+                                useLeft = true;
+                        }
+                }
+                else {
+                        useLeft = false;
+                }
+
+                if (useLeft) {
+                        results.push_back(left[leftCount]);
+                        if (leftCount < left.size()) {
+                                leftCount++;
+                        }
+                }
+                else {
+                        results.push_back(right[rightCount]);
+                        if (rightCount < right.size()) {
+                                rightCount++;
+                        }
+                }
+        }
+        return results;
+}
+
+
+
+/*Cacu Razvan lab4 prb7
+Write a program that sorts a stock of computers, represented in the program as objects created from a structure
+that stores the computers' characteristics: name (string of characters), processor type (string of characters),
+frequency (long int), RAM memory (int), price (float). The sorting is performed, as specified by the user, by
+price, memory amount, frequency, or processor type. Use the qsort( ) library function or any other sorting
+technique. Next sort the data using a character string and a numerical field. Display the results.
+*/
+
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+#include<assert.h>
+
+using namespace std;
+
+struct Computers{
+        char name[50];
+        char processor_type[50];
+        long int frequency;
+        int RAM;
+        float price;
+};
+
+void print_computer(Computers);
+Computers data_read(Computers);
+
+bool cmp_name(Computers a, Computers b);
+bool cmp_cpu(Computers a, Computers b);
+bool cmp_frequency(Computers a, Computers b);
+bool cmp_ram(Computers a, Computers b);
+bool cmp_price(Computers a, Computers b);
+
+
+
+int main()
+{
+        std::vector<Computers>computer;
+        Computers a{};
+        int n;
+        std::cout << "\n The number of computers : ";
+        std::cin >> n;
+        for (int i{}; i < n; i++)
+        {
+                a = data_read(a);
+                computer.push_back(a);
+        }
+        int choice;
+        cout << "Sorted mothods :\n1-name\n2-CPU type \n3-RAM\n4-Frequency\n5-price\n Your choice : ";
+        cin >> choice;
+        assert(choice ==  1||choice==2||choice==3||choice==4||choice==5 );
+        switch (choice) {
+        case 1:
+        { sort(computer.begin(), computer.end(), cmp_name);
+        break; }
+        case 2:
+        { sort(computer.begin(), computer.end(), cmp_cpu);
+        break; }
+        case 3:
+        { sort(computer.begin(), computer.end(), cmp_ram);
+        break; }
+        case 4:
+        { sort(computer.begin(), computer.end(), cmp_frequency);
+        break; }
+        case 5:
+        { sort(computer.begin(), computer.end(), cmp_price);
+        break; }
+        default: break;
+
+        
+        }
+        system("cls");
+        cout << "The sorted computers are  \n";
+        for (int i{}; i < n; i++)
+        {
+                cout << endl;
+                print_computer(computer[i]);
+        }
+}
+
+
+Computers data_read(Computers x)
+{
+            getchar();
+                cout << "Name: ";
+                cin.getline(x.name, 50);
+                cout << "CPU type: ";
+                cin.getline(x.processor_type, 50);
+                cout << "Frequency: ";
+                cin >> x.frequency;
+                cout << "RAM size: ";
+                cin >> x.RAM;
+                cout << "Price: ";
+                cin >> x.price;
+
+                return x;
+
+                
+}
+
+
+
+        void print_computer(Computers x) {
+                cout << "Name: " << x.name <<endl;
+                cout << "CPU type: " << x.processor_type << endl;
+        cout << "Frequency: " << x.frequency << endl;
+        cout << "RAM: " << x.RAM << endl;
+        cout << "Price: " << x.price <<endl;
+        }
+
+
+        bool cmp_name(Computers a, Computers b) { return (strcmp(a.name, b.name) < 0); }
+        bool cmp_price(Computers a, Computers b) { return (a.price < b.price); }
+        bool cmp_frequency(Computers a, Computers b) { return (a.frequency < b.frequency); }
+        bool cmp_ram(Computers a, Computers b) { return (a.RAM < b.RAM); }
+        bool cmp_cpu(Computers a, Computers b) { return (strcmp(a.processor_type, b.processor_type) < 0); }
+
+
+}
+
+
+/*Cacu Razvan lab4 prb8
+Read from two files, two one dimensional arrays composed of real values. Generate a third array that contains
+all the values from the initial arrays and all the values obtained by calculating the average of the corresponding
+numbers. If the initial arrays have different numbers of values, the average is calculated between the existent
+values and 0.0. Order the last array and count the number of non-unique elements.*/
+
+#include<iostream>
+#include<vector>
+#include<fstream>
+#include<assert.h>
+#include<algorithm>
+
+using namespace std;
+
+int main()
+{
+        vector<float> first, second, third;
+        ifstream file1, file2;
+
+        float value, fs1, fs2, fs3;
+        file1.open("numere1.txt", ios::in);
+        file2.open("numere2.txt", ios::in);
+        while(!file1.eof())
+        {
+                file1 >> value;
+                first.push_back(value);
+                third.push_back(value);
+                
+
+        }
+        while (!file2.eof())
+        {
+                file2 >> value;
+                second.push_back(value);
+                third.push_back(value);
+                
+        }
+        fs1 = first.size(); fs2 = second.size();
+        if (fs1 > fs2)
+        {
+                fs3 = fs1;
+                for (int i{}; i < fs1 - fs2; i++)
+                        second.push_back(0);
+        }
+        else if (fs1 < fs2)
+        {
+                fs3 = fs2;
+                for (int i{}; i < fs2 - fs1; i++)
+                        first.push_back(0);
+        }
+        else
+                fs3 = fs1;
+
+        for (int i{}; i < fs3; i++)
+        {
+                value = (first[i] + second[i])/2;
+                third.push_back(value);
+        }
+        sort(third.begin(), third.end());
+
+        float aux = third.size();
+        third.erase(unique(third.begin(), third.end()), third.end());
+
+        cout << "The final array is : \n";
+        for (auto& i : third)
+                cout << endl << i;
+        cout << "\nThere are " << aux - third.size() << " non unique values !";
+
+        file1.close();
+        file2.close();
+
+
+}
+
+
+
+/*Cacu Razvan lab4 prb10
+Generate 200 random float values. Store the integer parts (not bigger than 100) into an array. The fractional
+parts (limited at 20 as an integer value representing a 0.20 fractional part) are stored into another array with the
+same size as the first one. The initial values re-calculated by combining the elements stored into the previously
+described arrays are stored into another vector. Display all the arrays. Use the  library function for
+storing the float values and display the final result
+*/
+
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+#define Lenght 200
+
+int main()
+{
+        srand(time(NULL));
+        vector<float> first, second, third;
+        float value, value1;
+        for (int i{}; i < Lenght; i++)
+        {
+                value = rand() % 100 + 1;
+                first.push_back(value);
+                value1 = (float)(rand() % 20 + 1) / 100;
+                second.push_back(value);
+                value += value1;
+                third.push_back(value);
+        }
+        sort(third.begin(), third.end());
+        for (int i{}; i != Lenght; i++)
+                cout << endl << third[i];
+}
+
+

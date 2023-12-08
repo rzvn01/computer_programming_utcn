@@ -1,0 +1,526 @@
+
+/*Cacu Razvan lab2  prb 1 - Arrangements of n taken k
+*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+int A(int, int);
+
+
+
+int main() {
+        int k, n;
+        cout << "enter n and k :";
+        cin >> n >> k;
+        assert(k <n);
+        cout << "The result is  : " << A(n, k);
+
+
+}
+
+int A(int n, int k) {
+        int a;
+        if (k == 1)
+                return n;
+        else 
+                return n * A(n-1, k-1);
+}
+
+
+
+/*Cacu Razvan lab2  prb 2 - Combinations of n taken by k
+*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+float C(int, int);
+
+int main() {
+        int k, n;
+        cout << "enter n and k :";
+        cin >> n >> k;
+        assert(k <= n);
+        cout << "The result  : " << C(n, k);
+}
+
+float C(int n, int k) {
+        int a;
+        if (k == 0 ||n==0||k==n)
+                return 1;
+        
+        else 
+                return (float)n/(n-k) * C(n - 1, k);
+}
+
+
+
+
+/*Cacu Razvan lab2  prb 3
+* Calculate the greatest common divider of 2 numbers using a recursive function.
+*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+int divizor(int a,int b);
+
+int main() {
+        int a, b;
+        cout << "Enter 2 numbers  :";
+        cin >> a >> b;
+        cout << " The greatest common divider of "<<a<<" "<<b<<" is : "<<divizor(a, b);
+}
+
+int divizor(int a, int b)
+{
+        while (a != b)
+        {
+                if (a > b)
+                        return divizor(a - b, b);
+                else return divizor(a, b -a);
+                
+
+        }
+}
+
+
+
+
+/*Cacu Razvan lab2 prb4 
+(Gauss arithmetical-geometrical media)
+*/
+
+#include<iostream>
+using namespace std;
+float an(int);
+float bn(int);
+int a, b;
+int main()
+{
+        int n;
+        cout << "\nEnter the value of n : ";
+        cin >> n;
+        cout << "\nEnter the value of a0 : ";
+        cin >> a;
+        cout << "\nEnter the value of b0 : ";
+        cin >> b;
+        cout << "\nan is : " << an(n);
+        cout << "\nbn is : " << bn(n);
+        
+}
+
+float an(int n) {
+
+        if (n == 0)
+                return a;
+        else return (float) (an(n - 1) + bn(n - 1))/2;
+
+}
+
+float bn(int n ) {
+        if (n == 0)
+                return b;
+        else 
+                return (float)sqrt(an(n - 1) * bn(n - 1));
+}
+
+
+/* Cacu Razvan l2 prb5 
+ Read a string of caracters from the keyboard, one character at a time, using a character
+function. Reverse the string using a recursive function
+*/
+
+#include<iostream>
+using namespace std;
+char* arr;
+
+
+void revert(int, int);
+
+int main()
+{
+
+        int n;
+        cout << "\nEnter the size of the array : ";
+        cin >> n;
+        arr = new char[n];
+
+        for (int i{};i<n;i++)
+        {
+                cout << "\nElement [" << i + 1 << "] : ";
+                cin >> arr[i];
+        }
+
+        revert(n-1, 0);
+        cout << "\n The inverted string is : " << " ";
+        for (int i{}; i < n; i++)
+                cout << arr[i];
+
+
+}
+
+void revert(int n, int i)
+{
+        char aux;
+        if (i <= n)
+        {
+                        aux = arr[n ];
+                arr[n ] = arr[i];
+                arr[i] = aux;
+                
+
+                revert(n-1, i+1);
+        }
+}
+
+
+
+/* Cacu Razvan l2 prb6
+Determine the scalar product of 2 vectors using a recursive function (one-dimensional
+array same dimension).
+*/
+
+#include<iostream>
+using namespace std;
+
+int vector_product(int);
+
+int* vector1, *vector2;
+
+int main()
+{
+        int n;
+        cout << "\n Enter the size of the vectors : ";
+        cin >> n;
+        cout << " Enter the values of the first vector : ";
+        vector1 = new int[n];
+        vector2 = new int[n];
+
+        for (int i{}; i < n; i++)
+                cin >> vector1[i];
+        cout << " Enter the values of the second  vector : ";
+
+        for (int i{}; i < n; i++)
+                cin >> vector2[i];
+        cout << "The scalar product is : " << vector_product(n - 1);
+
+}
+
+int vector_product(int n)
+{
+        if (n > -1)
+                return vector1[n] * vector2[n] + vector_product(n - 1);
+        else return 0;
+
+}
+
+
+
+/* Cacu Razvan lab2 prb 7
+.Calculate the sum of the odd numbers from an array of integer values, using a recursive
+function. The numbers from the array are read from a file. The first value in the array
+represents the array's length.
+
+*/
+
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+int sum(int*, int);
+
+int main() {
+
+
+        int number, * arr;
+        ifstream input_file("data.txt");
+        input_file >> number;
+        arr = new int[number];
+        arr[0] = number;
+        for (int i{ 1 }; i < number; i++)
+                input_file >> arr[i];
+        for (int i{}; i < number; i++)
+                cout << endl << " arr[" << i + 1 << "]: " << arr[i];
+        cout << "\nThe sum of the odd numbers  is : " << sum(arr, number-1);
+
+}
+
+int sum(int* arr, int n)
+{
+        if (n >= 0)
+                if (arr[n] % 2 == 1)
+                        return arr[n] + sum(arr, n - 1);
+                else return sum(arr, n - 1);
+        else return 0;
+        
+}
+
+
+
+/* Cacu Razvan lab2 prb 8
+. Using the code developed for the previous problem, calculate the sum of the prime
+numbers in the array.
+*/
+
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+int sum(int*, int);
+bool isPrime(int);
+int main() {
+
+
+        int number, * arr;
+        ifstream input_file("data.txt");
+        input_file >> number;
+        arr = new int[number];
+        arr[0] = number;
+
+        for (int i{ 1 }; i < number; i++)
+                input_file >> arr[i];
+
+        for (int i{}; i < number; i++)
+                cout << endl << " arr[" << i + 1 << "]: " << arr[i];
+
+        cout << "\nThe sum of the prime numbers  is : " << sum(arr, number - 1);
+
+}
+
+int sum(int* arr, int n)
+{
+        if (n > 0)
+        {
+                if (isPrime(arr[n]))
+                        return arr[n] + sum(arr, n - 1);
+                
+                else
+                        return sum(arr, n - 1);
+        }
+        else if (n == 0 && isPrime(arr[n] == true))
+        
+                return arr[n];
+        
+}
+bool isPrime(int n)
+{
+        int i;
+        bool flag = true;
+        for (i = 2; i <= n / 2; i++)
+                if (n % i == 0)
+                        flag = false;
+        if (n == 1)
+                flag = false;
+        return flag;
+}
+
+
+/*Cacu Razvan lab2 prb9-
+*  Using a recursive function, calculate the sum of a series composed of keyboard entered 
+values. The values are read as long as the user desires so. Modify the function in order to 
+determine and display the average value of the entered numbers. Print on the screen a 
+significant message when the sum is greater than a predefined value.
+*/
+
+#include<iostream>
+using namespace std;
+int sum(int, int);
+float avg(int, int,int,int);
+
+int main()
+{
+        int n = 1, sum1, value;
+        cout << "enter the predifined value : ";
+        cin >> value;
+        
+        cout << "\nThe sum is : "<< sum(n, 0);
+        cout << "\nThe avg is : " << avg(n,0,value,1);
+
+}
+
+int sum(int n, int sum1) {
+        char t;
+        cout << "\nenter anumber :";
+        cin >> n;
+        sum1 += n;
+        cout << "\nDo you want to continue ?";
+        cin >> t;
+        if (t == 'y' || t == 'Y')
+                return sum(n, sum1);
+        else return sum1;
+
+}
+float avg(int n, int sum1, int value,int count) {
+        char t;
+        
+        cout << "\n enter a number :";
+        cin >> n;
+        sum1 += n;
+        if (sum1 > value)
+                cout << endl<<sum1 << "\nis bigger than " << value;
+
+        cout << "\nDo you want to continue ?";
+        cin >> t;
+
+        if (t == 'y' || t == 'Y')
+        {
+                count++;
+                return avg(n, sum1, value,count);
+                
+        }
+        else {
+                return sum1/count;
+        }
+
+}
+
+
+/*Cacu Razvan lab2 prb10
+consider an array of n <=30 integer values Determine  the number of times a certain value x read from the keyboard appears in the
+array */
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+int recursive_count(int*, int , int,int);
+int main()
+{
+        int n, value;
+        cout << "\nEnter the size of the array(<= 30)";
+        cin >> n;
+        assert(n <= 30);
+        int*x = new int[n];
+        cout << "\n Enter the value you want to search : ";
+        cin >> value;
+        for (int i{};i<n;i++)
+        {
+                cout << " \n  new element : ";
+                cin >> x[i];
+        }
+        cout << "The value " << value << " was found " << recursive_count(x, n-1, 0,value) << " times";
+}
+
+int recursive_count(int* x, int n, int count ,int value) {
+        if (n >= 0)
+        {
+                if (x[n] == value)
+                {
+                        count++;
+                        recursive_count(x, n - 1, count, value);
+                }
+                else
+                        recursive_count(x, n - 1, count, value);
+        }
+        else return count;
+
+
+}
+
+
+
+/*Cacu Razvan lab2 prb11-
+* 
+Read from the keyboard a positive integer value n (base 10). Use a recursive function for
+converting n into another base 1< b<10, also read from the keyboard.
+
+*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+int base(int, int);
+int main()
+{
+        int n, b;
+        cout << "enter your number : ";
+        cin >> n;
+        cout << "enter your base  : ";
+        cin >> b;
+        assert(1 < b && b< 10);
+        cout << "the number " << n << " in base " << b << " is " << base(n, b);
+}
+int base(int n,int b)
+{
+        if (n == 0)
+                return 0;
+        else
+                return (n % b + 10 *base(n/b ,b));
+}
+
+
+
+
+/*        Cacu Razvan lab2 prb12 
+Consider the 2 - nd degree equation x^2�sx + p = 0. Without calculating the solutions x1 and
+x2 determine, if it is possible, Sn = x1n + x2n using this sum's recursive definition : Sum(n)
+= { 2, if n = 0; s, if n = 1; s* Sum(n - 1) � p* Sum(n - 2), if n > 1; }. sand p are float values, n is
+an integer value, all read from the keyboard.*/
+
+#include<iostream>
+using namespace std;
+ 
+float Sum(int, float, float);
+
+int main()
+{
+        float s, p;
+        int n;
+        cout << "enter the value of n :";
+        cin >> n; 
+        cout << "enter the value of s :";
+        cin >> s;
+        cout << "enter the value of p :";
+        cin >> p;
+
+        cout << Sum(n, s, p);
+}
+float Sum(int n, float s, float p) {
+        if (n == 0)
+                return 2;
+        else if (n == 1)
+                return s; 
+        else if(n>1)
+                return s*Sum(n - 1, s, p)-p* Sum(n - 2, s, p);
+
+}
+
+
+
+/* Cacu Razvan lab2 prb 13
+ Write a program that calculates recursively and non-recursively (two distinct functions)
+the value of the harmonic series sn=1/1+1/2+1/3+�1/n, where n is a natural number. Call
+the functions with 2 different values for n.
+
+*/
+
+#include<iostream>
+using namespace std;
+float harmonic(int);
+
+int main()
+{
+        int n;
+        cout << " \n enter the value of n :";
+        cin >> n;
+        cout << "\nThe harmonic sum is : " << harmonic(n);
+        float sum = 1.0;
+        
+
+        for (int i = 2; i < n + 1; i++)
+                sum+= (float)1 / i;
+        cout << "\nThe harmonic sum nonrecursively : " << sum;
+}
+
+float harmonic(int n)
+{
+        if (n == 1)
+                return 1;
+        else return (float)1 / n + harmonic(n - 1);
+
+}

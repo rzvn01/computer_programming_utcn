@@ -1,0 +1,170 @@
+
+/*Cacu Razvan lab12 prb1 
+Write a C++ program that displays some numerical values in decimal, octal and hexadecimal.
+Display the values left and right aligned, inside a field that can hold 15 characters. Use the
+setfill( ) manipulator for setting the filling character and the width( ) and precision( ) methods
+for setting the displaying field size and the values representation precision. 
+*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include <iomanip>
+using namespace std;
+
+
+int main() {
+
+        char field[15];
+        cout << std::setfill('_') << std::setprecision(15);
+        int a = 77;
+        std::cout.width(15); std::cout << std::left << std::hex << a << '\n';
+        std::cout.width(15); std::cout << std::right << std::oct << a << '\n';
+        std::cout.width(15); std::cout << std::left << std::dec << a << '\n';
+}
+
+
+
+/*Cacu Razvan lab12 prb2 
+* Write a C++ application that reads from the keyboard a series of values of various types.
+Display the values using the standard manipulators.*/
+
+#include<iostream>
+#include<iomanip>
+using namespace std; 
+
+int main() {
+        int a;
+        float b;
+        char c;
+
+        cout << "\n a int value : ";
+        cin >> a;
+        cout << "\n a float value : ";
+        cin >> b;
+        
+        cout << "\n a  char : ";
+        cin>>c;
+
+        cout << setbase(10) << right << setw(15)<< setfill('_') << showpos<< fixed << setprecision(2);
+        
+        cout << a << endl << flush;
+        cout << scientific << uppercase<< noshowpos << setprecision(9);
+        cout << b << endl << flush;
+        cout.width(15);
+        cout << hex << std::right << showbase << nouppercase << setfill('_') << setprecision(6);
+        cout << c;
+
+}
+
+
+
+/*Cacu Razvan lab12 prb3 
+Consider a data acquisition process from a hardware device (10 variables real type). Display,
+using an appropriate message, the data in a minimal format (the integer part). Determine the
+average value of the displayed numbers (the integer part) and if it is greater than a previously
+defined (or entered) threshold, display the data in a detailed format (float variables, 3 digits
+precision at the fractional part).
+*/
+#include<iostream>
+using namespace std;
+
+
+int main() {
+
+
+        float str[10];
+        for (int i{}; i < 10; i++) {
+                cout << "\n float value : ";
+                cin >> str[i];
+        }
+        int sum = 0;
+        for (int i{}; i < 10; i++)
+        {
+                cout << "\t" << (int)str[i];
+                sum += (int)str[i];
+        } 
+
+        int value;
+        cout << "\n Enter the value to compare with : ";
+        cin >> value;
+        if(sum/10>=value)
+                for (int i{}; i < 10; i++) {
+                        cout << std::fixed;
+                        cout.precision(3);
+                        cout << str[i] << "\t";
+                }
+
+}
+
+
+/*Cacu Razvan lab12 prb4 
+Define a class called AcceleratedMovement that contains the private attributes dc (the current
+distance), vc (the current speed) and a (the acceleration). The values of dc, vc and a are
+initialized in the constructor and their values are equal to d0, v0 and a0 (as parameters).The
+class overloads the extraction and insertion operators for initializing and displaying the
+characteristics of a certain instance.
+Implement the method determineMovement that re-calculates the values of dc and vc,
+considering a number of seconds (received as paramenter) and the law of uniformly
+accelerated linear motion with a0 acceleration. Instantiate the class and use the defined
+members.
+*/
+
+
+#include<iostream>
+using namespace std;
+
+
+class AcceleratedMovement {
+        int dc, vc, a;
+public:
+        void setDC(int aux) { dc = aux; }
+        int getDC() { return dc; }
+
+        void setVC(int aux) { vc = aux; }
+        int getVC() { return vc; }
+
+
+        void setA(int aux) { a = aux; }
+        int getA() { return a; }
+
+        AcceleratedMovement(int d0 = 0, int v0 = 0, int a0 = 0) {
+                dc = d0;
+                vc = v0;
+                a = a0;
+        }
+
+        friend ostream& operator<<(ostream& stream, AcceleratedMovement obj);
+        friend istream& operator>> (istream& stream, AcceleratedMovement& obj);
+
+        void determineMovement(int time)
+        {
+                vc = vc + a * time;
+                dc = vc * time;
+        }
+};
+ ostream& operator<<(ostream& stream, AcceleratedMovement obj) {
+         stream << "\nThe dc is : " << obj.dc << "\nThe vc is : " << obj.vc << "\nThe a : " << obj.a;
+         return stream;
+}
+ istream& operator>> (istream& stream, AcceleratedMovement& obj) {
+         cout << "\nEnter dc : ";
+         stream >> obj.dc;
+         cout << "\nEnter vc : ";
+         stream >> obj.vc;
+         cout << "\nEnter a : ";
+         stream >> obj.a;
+         return stream;
+ } 
+
+ int main() {
+
+         AcceleratedMovement obj;
+         cin >> obj;
+         cout << obj;
+         int seconds;
+         cout << "\nenter the seconds : ";
+         cin >> seconds;
+         obj.determineMovement(seconds);
+
+         cout << obj;
+ }

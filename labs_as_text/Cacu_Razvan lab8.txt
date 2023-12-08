@@ -1,0 +1,684 @@
+
+/*Cacu Razvan lab8 prb1
+Implement a C++ application that defines the class called CurrentHour with hour, minute, second as
+private attributes. The class has public setter/getter methods for each attribute. Add a friend function that
+copies the content of a CurrentHour object used as parameter into another instance of the class that will be
+returned by the function, hour being modified to Greenwich Mean Time. Use the computer local current
+time.*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <chrono>
+#include <ctime>
+#include <iostream>
+using namespace std;
+
+class CurrentHour {
+        int hour;
+        int minute;
+        int second;
+public: 
+        void setHour(int a) {
+                hour = a;
+        }
+        int getHour() { 
+                return hour;
+        }
+        void setMinute(int a) {
+                minute = a;
+        }
+        int getMinute() {
+                return minute;
+        }
+
+        void setSecond(int a) {
+                second = a;
+        }
+        int getSecond() {
+                return second;
+        }
+        
+         CurrentHour friend copy(CurrentHour obj);
+};
+
+
+int main()
+{
+        CurrentHour c1, c2;
+        time_t t = time(NULL);
+        int h = (t / 3600) % 24+3;  
+        int m = (t / 60) % 60;
+        int s = t % 60;
+        cout <<"\nThe current hour is : " <<h << ":" << m << ":" << s;
+        c1.setHour(h);
+        c1.setMinute(m);
+        c1.setSecond(s);
+
+        c2 = copy(c1);
+        cout << "\nThe Greenwich hour is  " << c2.getHour() << ":" << c2.getMinute() << ":" << c2.getSecond();
+
+}
+
+
+CurrentHour copy(CurrentHour obj) {
+        CurrentHour aux;
+        aux.minute = obj.minute;
+        aux.hour = obj.hour-3;
+        aux.second = obj.second;
+        return aux;
+}
+
+
+
+/*Cacu Razvan lab8  prb2
+* Write a C++ application in which the class Calculator has a private attribute called RAM_memory (int)
+and a friend function named service_technician( ) that can modify the attribute's value. The friend
+function will be member in the class Motherboard, that encapsulates the processor_type variable (string of
+characters). Write the code that allows the modifying of the processor_type's value and the RAM_memory
+from the friend function.*/
+
+#include<iostream>
+using namespace std;
+
+class Motherboard ;
+
+class Calculator {
+  int        RAM_memory;
+public: 
+        void setRAM_memory(int a) {
+                RAM_memory = a;
+        }
+        int getRAM_memory() {
+                return RAM_memory;
+        }
+        friend void service_technician(Calculator& calc, Motherboard& motherb);
+};
+ class Motherboard {
+        char processor_type[30];
+public: 
+        void setProcessor_type(char *c) {
+                strcpy_s(processor_type, c);
+
+        }
+        char* getProcessor_type() {
+                return processor_type;
+        }
+        friend void service_technician(Calculator& calc , Motherboard& motherb);
+};
+
+int main()
+{
+
+        Calculator c1{};
+        Motherboard m1{};
+
+        service_technician(c1, m1);
+        cout << "\n The cpu name : " << m1.getProcessor_type();
+        cout << "\n The RAM ammount : " << c1.getRAM_memory();
+        
+}
+
+void service_technician(Calculator& c1, Motherboard& m1)
+{
+        int RAM;
+        char cpu_name[30];
+        
+        cout << "\n Enter the name of the cpu : ";
+        cin.getline(cpu_name, 30);
+        m1.setProcessor_type(cpu_name);
+        cout << "\nEnter the RAM ammount : ";
+        cin >> RAM;
+        c1.setRAM_memory(RAM);
+}
+
+
+
+/*Cacu Razvan lab8  prb3
+* Define a class called Repository that has 2 integer private variables. The class contains an empty
+constructor and another one with 2 parameters. An accesor method that displays the variables values is
+also included in the class. Write another class called Mathematics which is friend to the first one. This
+class contains the implementation of the elementary arithmetical operations (+, -, *, /) applied to the
+values stored in the first class. Each arithmetical method receives as parameter an object instantiated from
+the first class.*/
+
+#include<iostream>
+using namespace std;
+
+class Repository {
+        int first, second;
+public: 
+        void setFirst(int a) {
+                first = a;
+        }
+        int getFirst() {
+                return first;
+        }
+        void setSecond(int a) {
+                second = a;
+        }
+        int getSecond() {
+                return second;
+        }
+        friend class Mathematics;
+
+        Repository() {
+                first = 0;
+                second = 1;
+                cout << "\n Void constructor !";
+        }
+        Repository(int a, int b) {
+                first = a;
+                second = b;
+                cout << "\n Explicit constructor with parameters ";
+        }
+};
+class Mathematics {
+
+public: 
+        int operator+(Repository obj) {
+                int a = obj.first + obj.second;
+                return a;
+        }
+        int operator-(Repository obj) {
+                int a = obj.first - obj.second;
+                return a;
+        }
+        int operator*(Repository obj) {
+                int a = obj.first * obj.second;
+                return a;
+        }
+        double operator/(Repository obj) {
+                double a = (double)(obj.first / obj.second);
+                return a;
+        }
+};
+int main() {
+        int value;
+        double val;
+        Repository r1();
+        Mathematics m1;
+        cout << "\n Enter the first number : ";
+        cin >> value;
+        r1.setFirst(value);
+        cout << "\n Enter the second number : ";
+        cin >> value;
+        r1.setSecond(value);
+        value = m1+r1;
+        cout << "\nThe result of add is :" << value;
+        value = m1 - r1;
+        cout << "\nThe result of substract is :" << value;
+        value = m1 *r1;
+        cout << "\nThe result of product is :" << value;
+        val = m1/ r1;
+        cout << "\nThe result of division  is :" << val;
+
+}
+
+
+
+/*Cacu Razvan lab8  prb4
+  Write a C++ application that stores inside a class a public static integer variable called var_static. The
+variable is incremented each time the class's constructor is called. After instantiating several objects,
+display their number using the value of the static variable.*/
+
+
+#include<iostream>
+using namespace std;
+
+
+
+class Static {
+public:
+        static int var_static;
+
+        Static() {
+                cout << "\nConstructor called !";
+                var_static++;
+        }
+
+};
+int Static::var_static = 0;
+
+int main() {
+        Static s1;
+        cout << "The obj number  is : " << s1.var_static;
+        Static s2;
+        cout << "The obj number  is : " << s2.var_static;
+        Static s3;
+        cout << "The obj number  is : " << s3.var_static;
+        Static s4;
+        cout << "The obj number  is : " << s4.var_static;
+        Static s5;
+        cout << "The obj number  is : " << Static::var_static;
+}
+
+
+/*Cacu Razvan lab8  prb5
+  Implement the 4-th problem by changing the static variable's access modifier to private. Define a method
+that returns the counter's value. Analyze the case if the getter method is static or non-static and the way it
+is called.*/
+
+
+#include<iostream>
+using namespace std;
+
+
+
+class Static {
+        static int var_static;
+public:
+        Static() {
+                cout << "\nConstructor called !";
+                var_static++;
+        }
+  static        int getVar_static() { 
+                return var_static;
+        }
+};
+int Static::var_static = 0;
+
+int main() {
+        Static s1;
+        cout << "The obj number  is : " << s1.getVar_static();
+        Static s2;
+        cout << "The obj number  is : " << s2.getVar_static();
+        Static s3;
+        cout << "The obj number  is : " << s3.getVar_static();
+        Static s4;
+        cout << "The obj number  is : " << s4.getVar_static();
+        Static s5;
+        cout << "The obj number  is : " << Static::getVar_static();
+}
+
+
+
+/*Cacu Razvan lab8  prb6
+* Write a C++ application that defines a class named Point with the private attributes x and y. Implement a
+friend function that calculate and display the area and perimeter of different shapes objects defined by two
+Point parameters P0(x0, y0) and P1(x1, y1). Introduce another parameter named shape that controls the
+way the two points are used. If we consider a circle, the points delimit the circle's diameter (shape=1). If
+we are dealing with a right triangle (shape=2), the points determine the hypotenuse, and the other sides
+are determined considering the 2 initial points. The point's coordinates and the shape selection will be
+realized using parameters introduced from KB*/
+
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+class Point {
+        int x, y;
+public : 
+        void setX(int a) {
+                x = a;
+        }
+        int getX() {
+                return x;
+        }
+        void setY(int a) {
+                y = a;
+        }
+        int getY() {
+                return y;
+        }
+        friend void Area_perimeter(Point p1, Point p2,int shape);
+};
+
+int main() {
+        int val;
+        Point p1, p2; 
+        cout << "\n Enter the coordinate of the first point \nx: ";
+        cin >> val;
+        p1.setX(val);
+        cout << "\ny:";
+        cin >> val;
+
+        p1.setY(val);
+        cout << "\n Enter the coordinate of the second point \nx: ";
+        cin >> val;
+        p2.setX(val);
+        cout << "\ny:";
+        cin >> val;
+        p2.setY(val);
+        cout << "\n 1-circle\n2-triangle\n3-square \n  ";
+        cin >> val;
+        assert(val == 3 || val == 1 || val == 2);
+        Area_perimeter(p1, p2, val);
+}
+
+void Area_perimeter(Point p1, Point p2, int shape)
+{
+        int a = p1.x - p2.x;
+        int b = p1.y - p2.y;
+        float distance = sqrt(a * a + b * b);
+        switch (shape)
+        {  case 1:
+        {
+                cout << "\nThe shape is a circle ! \n";
+                cout << "The area of the circle is : " << 3.14 * distance * distance;
+                cout << "\nThe lenght of the circle is : " << 2 * 3.14 * distance;
+                break;
+        }
+        case 2: {
+                
+                cout << "\nThe shape is a triangle ! \n";
+                cout << "The area of the triangle is : " << sqrt(3) / 4 * distance * distance;
+                cout << "\nThe perimeter of the triangle is : " <<  3 * distance;
+                break;
+        }
+        case 3: {
+                cout << "\nThe shape is a square ! \n";
+                cout << "The area of the triangle is : " <<  distance * distance;
+                cout << "\nThe perimeter of the triangle is : " << 4 * distance;
+                break;
+        }
+        default:
+                break;
+        }
+}
+
+
+
+/*Cacu Razvan lab8  prb7
+* A kiosk sells newspapers, magazines and books. Each publication has a name, an editorial house, a
+number of pages, the number of copies and a price (no VAT). Write the class that models the publications.
+Introduce a static member named VAT_value (percentage) and a static method that modifies the value of
+this variable. Determine the total income and the average price per page for each publication type. Modify
+the VAT and redo the calculations. Order the printing houses by the total income and display the result.
+*/
+
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+
+class Publications {
+        int type;
+        char name[50], editorial_house[50];
+        int nr_pages, nr_copies;
+        double price;
+        static double VAT_value;
+
+public : 
+        
+
+        void setType(int aux) {
+                type = aux;
+        }
+        int getType() {
+                return type;
+        }
+   
+        void setName(char* aux) {
+                strcpy_s(name, aux);
+        }
+        char* getName() {
+                return name;
+        }
+
+        void setEditorial_House(char* aux) {
+                strcpy_s(editorial_house,aux);
+        }
+        char* getEditorial_house() {
+                return editorial_house;
+        }
+        
+        void setNR_pages(int aux) {
+                nr_pages = aux;
+        }
+        int getNR_page() {
+                return nr_pages;
+        }
+
+        void setNR_copies(int aux) {
+                nr_copies = aux;
+        }
+        int getNR_copies() {
+                return nr_copies;
+        }
+
+        void setPrice(double aux) {
+                price = aux;
+        }
+        double getPrice() {
+                return price;
+        }
+        
+        static void setVAT_value(double aux) {
+                VAT_value = aux;
+        }
+        static double getVAT_value() {
+                return VAT_value;
+        }
+
+
+
+}*arr;
+double Publications::VAT_value;
+
+void price_average(Publications* arr,int number);
+int main() {
+        int aux;
+        cout << "\nHow many items are in ur kiosk ? \nA:";
+        cin >> aux;
+        arr = new(nothrow)Publications[aux];
+        char name[30], ed_name[50];
+        double price;
+        int val;
+        Publications::setVAT_value(0);
+        for (int i{}; i < aux; i++) {
+
+                cout << "\n Type(1-newspapers 2 - magazines,  3 - books) \nA : ";
+                cin >> val;
+                assert(val == 1 || val == 2 || val == 3);
+                arr[i].setType(val);
+                getchar();
+                cout << "\n Name : ";
+                cin.getline(name, 30);
+                arr[i].setName(name);
+
+                cout << "\n Editorial House  : ";
+                cin.getline(ed_name, 30);
+                arr[i].setEditorial_House(ed_name);
+
+                cout << "\nNumber of pages : ";
+                cin >> val;
+                arr[i].setNR_pages(val);
+
+                cout << "\nNumber of copies : ";
+                cin >> val;
+                arr[i].setNR_copies(val);
+                
+                cout << "\nPrice : ";
+                cin >> price;
+                arr[i].setPrice(price + Publications::getVAT_value() * price);
+        }
+        price_average(arr,aux);
+        Publications::setVAT_value(17/100);
+        for (int i{}; i < aux; i++) {
+                double res = arr[i].getPrice() + Publications::getVAT_value() * price;
+                arr[i].setPrice(res);
+
+        }
+        price_average(arr, aux);
+}
+
+        void price_average(Publications * arr,int aux){
+
+                double type1_income = {}, type2_income{}, type3_income{}, type1_pages{}, type2_pages{}, type3_pages{};
+
+                for (int i{}; i < aux; i++)
+                        switch (arr[i].getType())
+                        {
+                        case 1:
+                        {
+                                type1_income += arr[i].getPrice();
+                                type1_pages += arr[i].getNR_page();
+                        }
+                        case 2:
+                        {
+                                type2_income += arr[i].getPrice();
+                                type2_pages += arr[i].getNR_page();
+                        }
+                        case 3: {
+                                type3_income += arr[i].getPrice();
+                                type3_pages += arr[i].getNR_page();
+                        }
+
+
+                        default:
+                                break;
+                        }
+
+                cout << "\n The income of the newspapers : " << type1_income;
+                cout << "\n The average price per page for newspapers : " << type1_income / type1_pages;
+                cout << "\n The income of the magazines : " << type2_income;
+                cout << "\n The average price per page for magazines : " << type2_income / type2_pages;
+                cout << "\n The income of the books  : " << type3_income;
+                cout << "\n The average price per page for books : " << type3_income / type3_pages;
+        }
+
+
+/*Cacu Razvan lab8 prb8
+Consider the Fraction class that has two private integer attributes a and b for the denominator and
+nominator. Use two setter and getter methods for all the class's attributes. Declare a friend function named
+simplify( ) that receives as parameter a Fraction object and returns the corresponding simplified object.
+Consider a private static integer variable icount that will be initialized with 0 and incremented in the
+class's constructors. Define an explicit constructor without parameters that initializes a with 0 and b with
+1 and another explicit constructor with two integer parameters. For this constructor is verified if b!=0
+before to be called. Define an explicit destructor that displays and decrements the value of icount. Define a
+friend function f_add_fraction(...) that returns an object reflecting the sum of the objects received as
+parameters. Implement similar functions for fractions subtraction, multiplication and division. Instantiate
+two Fraction objects and read the appropriate data from the keyboard. Display the initial attributes and the
+ones obtained after simplifying. Call the implemented friend functions and store the results into another
+different four objects. Display the results and the objects counter using the corresponding accesor
+methods*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+class Fraction {
+        int nominator, denominator;
+        static int icount;
+public : 
+        void setNominator(int a) {
+                nominator = a;
+        }
+        int getNominator() {
+                return nominator;
+        }
+
+        void setDenominator(int a) {
+                denominator = a;
+        }
+        int getDenominator() {
+                return denominator;
+        }
+        Fraction() {
+                cout << "\nVoid constructor called !";
+                nominator = 0;
+                denominator = 1;
+                icount++;
+        }
+        Fraction(int a, int b) {
+                cout << "\nExplicit constructor called !";
+                nominator = a;
+                denominator = b;
+                icount++;
+        }
+        ~Fraction() {
+                cout << "\nDestructor called !";
+                icount--;
+                cout << "\n The value of icount : " << icount;
+        }
+        friend Fraction simplify(Fraction &f1);
+        friend Fraction f_add_fraction(Fraction &f1,Fraction& f2);
+        friend Fraction f_substract_fraction(Fraction &f1,Fraction& f2);
+        friend Fraction f_product_fraction(Fraction &f1, Fraction &f2);
+        friend Fraction f_division_fraction(Fraction  &f1, Fraction &f2);
+
+
+
+
+
+};
+int gcd(int a, int b);
+ int Fraction::icount=0;
+int main() {
+        Fraction f1(3, 5), f2(5, 14), f3, f4;
+        int val;
+        cout << "\nEnter the nominator of the third fraction :";
+        cin >> val;
+        f3.setNominator(val);
+        cout << "\nEnter the denominator of the third fraction :";
+        cin >> val;
+        assert(val != 0);
+        f3.setDenominator(val);
+        cout << "\nEnter the nominator of the fourth fraction :";
+        cin >> val;
+        f4.setNominator(val);
+        cout << "\nEnter the denominator of the fourth fraction :";
+        cin >> val;
+        assert(val != 0);
+        f4.setDenominator(val);
+
+
+        Fraction sum = f_add_fraction(f1,f2);
+        Fraction subs = f_substract_fraction(f1, f3);
+        Fraction prod = f_product_fraction(f2, f4);
+        Fraction div = f_division_fraction(f3, f4);
+
+        cout << "\n\n\nThe result of the sum is : " << sum.getNominator() << "/" << sum.getDenominator();
+        cout << "\nThe result of the substract is : " << subs.getNominator() << "/" << subs.getDenominator();
+        cout << "\nThe result of the product  is : " << prod.getNominator() << "/" << prod.getDenominator();
+        cout << "\nThe result of the division is : " << div.getNominator() << "/" << div.getDenominator();
+}
+
+Fraction simplify(Fraction &f1)
+{
+
+        Fraction f2;
+        f2.nominator=(f1.getNominator() /gcd(f1.nominator, f1.denominator));
+        f2.denominator=(f1.getDenominator() / gcd(f1.nominator, f1.denominator));
+        cout << "\nFraction simplified !";
+        return f2;
+
+}
+
+Fraction f_add_fraction(Fraction &f1, Fraction& f2)
+{
+        Fraction aux;
+        aux.nominator = f1.nominator*f2.denominator+f2.nominator*f1.denominator;
+        aux.denominator = f1.denominator*f2.denominator;
+        aux = simplify(aux);
+        return aux;
+}
+Fraction f_substract_fraction(Fraction& f1, Fraction &f2)
+{
+        Fraction aux;
+        aux.nominator = f1.nominator * f2.denominator - f2.nominator * f1.denominator;
+        aux.denominator = f1.denominator * f2.denominator;
+        aux = simplify(aux);
+        return aux;
+}
+Fraction f_product_fraction(Fraction &f1, Fraction &f2) {
+        Fraction aux;
+        aux.nominator = f1.nominator * f2.nominator;
+        aux.denominator = f1.denominator * f2.denominator;
+        aux = simplify(aux);
+        return aux;
+}
+Fraction f_division_fraction(Fraction& f1, Fraction &f2) {
+        Fraction aux;
+        aux.nominator = f1.nominator * f2.denominator;
+        aux.denominator = f1.denominator * f2.nominator;
+        aux = simplify(aux);
+        return aux;
+}
+
+int gcd(int a, int b)
+{
+        if (a == 0) return b;
+        return gcd(b % a, a);
+}
+

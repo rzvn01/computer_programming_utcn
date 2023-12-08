@@ -1,0 +1,277 @@
+
+/*Cacu Razvan - lab1 prb 1
+Define macro functions MAXi (i=2,3) that determines and display the maximum between 2 and other, among
+3 numbers introduced from the KB. Use different options (conditional operator, if statement, etc.).
+*/
+#include <iostream>
+using namespace std;
+
+#define MAX_2(a, b){\
+a=(a)>(b)?(a) : (b);\
+}
+
+#define MAX_3(a, b, c) { \
+ if(c>a) a=c; \
+  if(b>a)a=b; \
+}
+
+int main() {
+        int a, b, c, x, y, z;
+
+        cout << "Enter 2 numbers " << endl;
+        cin >> a >> b;
+        MAX_2(a, b);
+        cout << "The maximum between the 2 numbers is :" << a << endl;
+        cout << "Enter 3 numbers : " << endl;
+        cin >> x >> y >> z;
+        MAX_3(x, y, z);
+        cout << "The maximum between the 3 numbers is : " << x;
+
+        return 0;
+}
+
+
+/*Cacu Razvan lab1 prb2 
+Define an inline function min() that determines and display the minimum among 2 and other among 3 numbers
+introduced from the KB. Consider overloading functions.
+*/
+
+#include<iostream>
+using namespace std;
+
+inline int min(int , int );
+inline int min(int , int , int );
+
+int main()
+{
+        int a, b, c, x;
+        cout << "enter 2 numebers " << endl;
+        cin >> a >> b ;
+        x = min(a, b);
+        cout << "min =\t" << x << endl;
+
+        cout << "enter 3 numebers " << endl;
+        cin >> a >> b >> c;
+        x = min(a, b, c);
+        cout << "min =\t" << x << endl;
+
+        return 0;
+}
+
+inline int min(int a, int b, int c)
+{
+        if (a > b)
+                a = b;
+        if (a > c)
+                a = c;
+        return a;
+}
+inline int min(int a, int b) {
+        if (a > b)
+                return b;
+        else return a;
+}
+
+
+
+/*Cacu Razvan lab1 prb3
+ Consider a Student data structure, which contains a string field (maximum 30) for name_surname and another
+mark field of type int. Define a Student object where the data will be read from the keyboard. Validate width
+assertions that name_surname has at least 5 characters and the mark should be> = 5 and <=10. Display the
+object fields if entered correctly
+*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+struct Student {
+        char name_surname[30];
+        int mark;
+};
+
+int main()
+{
+        Student p{};
+        cout << "enter the name and surname of the student " << endl;
+        cin.getline(p.name_surname, 30);
+        assert(strlen(p.name_surname) >= 5);
+        cout << "enter the mark of the student" << endl;
+
+        cin >> p.mark;
+        assert(p.mark <= 10 &&p.mark >= 5);
+        cout << "name and surname: " << p.name_surname << " mark : " << p.mark;
+
+        return 0;
+}
+
+
+
+/*Cacu Razvan lab1 prb4
+Consider a function with 3 implicit parameters (all) (int, float, double) that returns the product of the values.
+Call that function with different variants for effective parameters(no pram, 1 param, 2 params, 3 params).
+*/
+
+#include<iostream>
+using namespace std;
+
+
+double product(int a = 10, float b = 1.5, double c = 2.2)
+{
+return c * b * a;
+}
+int main()
+{
+        int a;
+        float b;
+        double c;
+        cout << "Enter 1 integer 1 float and 1 double !" << endl;
+        cin >> a >> b >> c;
+        cout << "Without parameters " << product() << endl;
+        cout << "With 1 parameter : " << product(a) << endl;
+        cout << "With 2 parameters " << product(a, b) << endl;
+        cout << "With 3 parameters " << product(a, b, c);
+        return 0;
+}
+
+
+
+/*Cacu Razvan lab1 prb5
+Using functions overloading define 3 functions with the same name but with different prams type (int, int*,
+int&) that will return the square root of the int value. Analyze the calling mechanism by value and reference.
+
+*/
+
+#include<iostream>
+#include<math.h>
+using namespace std;
+
+float square_root(int a) { return sqrt(a); }
+float square_root(int* a) { return sqrt(*a); }
+float square_root(int& a) { return sqrt(a); }
+
+int main()
+{
+        int a;
+        cout << "enter the value of a ";
+        cin >> a;
+        cout << square_root(&a);
+        //cout << square_root(a) ; if we have the same function with  the & it will not be overload !!
+        return 0;
+}
+
+
+
+/*Cacu Razvan lab1 prb6
+Determine the minimum of a 10 float numbers from a one dimensional array (implicit values or from the KB)
+using a function with a variable number of parameters. The first 7 values will be considered initially, next the
+last 3, and at the end these 2 values.
+*/
+
+#include<iostream>
+#include<stdarg.h>
+
+using namespace std;
+
+float Min(double , ...);
+int main()
+{   
+        float arr[10], a, b;
+        for (int i{}; i < 10; i++)
+        {
+                cout << " element  " << i + 1 << " :";
+                cin >> arr[i]
+                cout << endl;
+        }
+        a=Min(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], HUGE_VAL);
+        b = Min(arr[7], arr[8], arr[9], HUGE_VAL);
+        if (a > b)
+                a = b;
+        cout << "the minimum is  : " << a;
+}
+float Min(double x, ...) {
+        double value, min = 0;
+        int i = 0;
+        va_list ap;
+        va_start(ap, x);
+        while ((value = va_arg(ap, double)) != HUGE_VAL)
+        {
+                if (i == 0 || min > value)
+                        min = value;
+                i++;
+        }
+        va_end(ap);
+        return min;
+}
+
+
+
+
+/*Cacu Razvan lab1 prb7
+Write a program that performs a simple coding operation by increasing with 3 the value of the ASCII code of a
+character using macro functions. For example, A becomes C, etc.
+
+*/
+
+#include<iostream>
+using namespace std;
+
+#define increasing(a){ \
+a += 3; \
+}
+
+int main()
+{
+        char a;
+        cout << "enter your char : \t ";
+        cin >> a;
+        increasing(a);
+        cout << "the char is :" << a;
+        return 0;
+}
+
+
+/*Cacu Razvan lab1 prb8
+* Write a program that displays the name of the program, the compilation date and time and the number of code
+lines included in the program using standard macrofunctions.
+*/
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+        cout << "the time of the compilation is :" << __TIME__ << " date : " << __DATE__ << endl;
+        cout << "the name of the program is  : " << __FILE__ << endl;
+        cout << "the number of lines is :" << __LINE__ + 1;
+}
+
+
+
+
+/*Cacu Razvan lab1 prb9
+* we will code every char of the string using 11001010 as mask 
+and decode it with the same mask using XOR 
+*/
+
+#include<iostream>
+using namespace std;
+#define max_value 50
+#define Mask(x){ \
+x=x^202; \
+}
+
+int main()
+{   char a[max_value];
+    cout << " enter your string :\t" ;
+        cin.getline(a, max_value);
+
+        for (int i{}; i < max_value; i++)
+                Mask(a[i]);
+        for (int i{}; i < max_value; i++)
+        cout <<(int) a[i] << " ";
+        for (int i{}; i < max_value; i++)
+                Mask(a[i]);
+        cout << endl << a;
+        return 0;
+}

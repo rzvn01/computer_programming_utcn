@@ -1,0 +1,532 @@
+
+/*
+Cacu Razvan lab10 prb1
+Implement the program presented in the third example and examine the compilation errors if
+are by eliminating the existing comments? Modify the program so the object obiect_derivat
+will be able to access the aduna( ) and scade( ) methods, from the main( ) function keeping
+the private inheritance.
+*/
+#include <iostream>
+using namespace std;
+class Base {
+protected: int a, b;
+public:
+        Base() { a = 1, b = 1; }
+        void setA(int a) {
+                this->a = a;
+        }
+        void setB(int b) {
+                this->b = b;
+        }
+        int getA() {
+                return a;
+        }
+        int getB() {
+                return b;
+        }
+        int add() {
+                return a + b;
+        }
+        int substract() {
+                return a - b;
+        }
+};
+class Deriv : private Base
+{
+public:
+        int getProduct() {
+                return a * b;
+        }
+        int getsum() {
+                return add();
+        }
+        int getSubs() {
+                return substract();
+        }
+};
+int main()
+{
+        Base b1;
+        cout << "\n Valorile initiale " << b1.getA() << " " <<
+                b1.getB() << '\n';
+        cout << "\nSuma :  " << b1.add(); 
+                cout << "\nDiferenta este (cu val. initiale, baza) = " << b1.substract();
+
+        b1.setA(4);
+        b1.setB(2);
+        cout << "\nAfis din baza (modificat): " << b1.getA() << " " << b1.getB() << '\n';
+        cout << "\nSuma/Diferenta dupa setare= " << b1.add() << "/" <<        b1.substract() << '\n';
+        Deriv b2
+                ;
+        cout << "\nProdusul este  = " << b2.getProduct() << '\n';
+        cout << "\nAdunarea este  = " << b2.getsum();
+        cout << "\nScaderea este  = " << b2.getSubs();
+        cout << endl;
+        
+}
+
+
+
+/*Cacu Razvan lab10 prb3
+Implement a class that has 2 protected integer variables, that contains a setter and getter
+methods for each attribute. Write a second class that inherits the first defined class and
+implements the elementary arithmetic operations (+, -, *, /) applied on the variables mentioned
+above the results being returned by methods. Write a third class derived from the second one
+that implements the methods for calculating the square root of a number (mul result obtained
+by the previous derived class) received as parameter, and for raising a numeric value to a
+certain power (the base (plus, result obtained by the previous derived class) and the power
+(minus, result obtained by the previous derived class) are sent to the method as parameters).
+Verify the methods's calling using objects at different hierchies levels
+*/
+
+#include <iostream>
+#include <math.h>
+using namespace std;
+class A {
+protected: int a, b;
+public:
+        void setA(int a) {
+                this->a = a;
+        }
+        void setB(int b) {
+                this->b = b;
+        }
+        int getA() { return a; }
+        int getB() { return b; }
+
+};
+class B : public A {
+public:
+        int sum() {
+                return a + b;
+        }
+        int product() {
+                return a * b;
+        }
+        int substract() {
+                return a - b;
+        }
+        double division() {
+                if (b != 0)
+                        return (float)a / b;
+                else if (b == 0) {
+                        cout << "\nthe denominator can't be 0 !";
+                }
+        }
+};
+class C : public B {
+public:
+        float square() {
+                return sum() * sum();
+        }
+        float power() {
+                return pow(sum(), substract());
+        }
+};
+int main()
+{
+        A a1;
+        C c1;
+        int aux;
+        cout << "\nThe first value :  ";
+        cin >> aux;
+        a1.setA(aux);
+        c1.setA(aux);
+        
+        cout << "\n The second value  ";
+        cin >> aux;
+        a1.setB(aux);
+        c1.setB(aux);
+        cout << endl;
+        cout << "\nThe result of sum is : " << c1.sum();
+        cout << "\nThe result of substract is : " << c1.substract();
+        cout << "\nThe result of product is : " << c1.product();
+        cout << "\nThe result of division is : " << c1.division();
+        cout << endl<< c1.sum() << " squared is: " << c1.square() << endl;
+        cout << endl<<c1.sum() << " to the power of " << c1.substract() << " is: " << c1.power() << endl;
+}
+
+
+
+/*Cacu Razvan lab10 prb4
+Define a class called Triangle with 3 attributes for the triangle sides that has a method that
+calculates the perimeter of the triangle with the sides introduced from the KB. Another class,
+Triangle_extended, is derived in public mode from Triangle and defines a method for
+calculating the triangle's area. Using objects from both classes call the allowed methods.
+Verify before to instantiate the objects the possibility to define a Triangle object
+*/ 
+
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+class T {
+protected: int s1, s2, s3;
+public:
+    void setS1(int l1) {
+        s1 = l1;
+    }
+    int getS1() { return s1; }
+
+    void setS2(int l2) {
+       s2 = l2;
+    }
+
+    int getS2() { return s2; }
+
+    void setS3(int l3) {
+       s3 = l3;
+    }
+
+    int getS3() { return s3; }
+
+    int perimeter() {
+        if(s1 + s2 > s3 && s1 + s3 > s2 && s3 + s2 > s1)
+            return s1 + s2 + s3;
+        else {
+            cout << "\nThese sides can't create a triangle!";
+            return -1;
+        }
+    }
+};
+class T_extended : public T {
+public:
+    double Triangle_area() {
+        int perimeter = s1 + s2 + s3;
+        double semiperimeter = (float)perimeter / 2;
+        return sqrt(semiperimeter * (semiperimeter - s1) * (semiperimeter - s2) * (semiperimeter - s3));
+    }
+};
+int main()
+{
+ 
+    T_extended t2;
+    int var;
+    cout << "\nSide 1 : ";
+    cin >> var;
+ 
+    t2.setS1(var);
+    cout << "\nSide 2 : ";
+    cin >> var;
+ 
+    t2.setS2(var);
+    cout << "\nSide 3 :  ";
+    cin >> var;
+  
+    t2.setS3(var);
+    cout << "The perimeter is: " << t2.perimeter() << endl;
+    cout << "The area is: " << t2.Triangle_area() << endl;
+}
+
+
+/*Cacu Razvan lab10 prb5~
+Define a class called Triangle with 3 attributes for the triangle sides that has a method that
+calculates the perimeter of the triangle with the sides introduced from the KB. Another class,
+Triangle_extended, is derived in public mode from Triangle and defines a method for
+calculating the triangle's area. Using objects from both classes call the allowed methods.
+Verify before to instantiate the objects the possibility to define a Triangle object
+*/ 
+
+#include <iostream>
+#include <math.h>
+using namespace std;
+
+class T {
+protected: int s1, s2, s3;
+public:
+    void setS1(int l1) {
+        s1 = l1;
+    }
+    int getS1() { return s1; }
+
+    void setS2(int l2) {
+        s2 = l2;
+    }
+
+    int getS2() { return s2; }
+
+    void setS3(int l3) {
+        s3 = l3;
+    }
+
+    int getS3() { return s3; }
+
+    int perimeter() {
+        if(s1 + s2 > s3 && s1 + s3 > s2 && s3 + s2 > s1)
+            return s1 + s2 + s3;
+        else {
+
+            cout << "\nThese sides can't create a triangle!";
+            return -1;
+        }
+    }
+};
+class T_extended : public T {
+public:
+    double Triangle_area() {
+        int perimetet = s1 + s2 + s3;
+        double semiperemeter = (float)perimetet / 2;
+        return sqrt(semiperemeter * (semiperemeter - s1) * (semiperemeter - s2) * (semiperemeter - s3));
+    }
+    
+    double height1() {
+        return (0.5 * sqrt((s1 + s2 + s3) * (s2 + s3 - s1) * (s1 - s2 + s3) * (s1 + s2 - s3))) / s1;
+    }
+    double height2() {
+        return (0.5 * sqrt((s1 + s2 + s3) * (s2 + s3 - s1) * (s1 - s2 + s3) * (s1 + s2 - s3))) / s2;
+    }
+    double height3() {
+        return (0.5 * sqrt((s1 + s2 + s3) * (s2 + s3 - s1) * (s1 - s2 + s3) * (s1 + s2 - s3))) / s3;
+    }
+};
+int main()
+{
+ 
+    T_extended t2;
+    int var;
+    cout << "\nSide 1 : ";
+    cin >> var;
+ 
+    t2.setS1(var);
+    cout << "\nSide 2 : ";
+    cin >> var;
+ 
+    t2.setS2(var);
+    cout << "\nSide 3 :  ";
+    cin >> var;
+  
+    t2.setS3(var);
+    cout << "The perimeter is: " << t2.perimeter() << endl;
+    cout << "The area is: " << t2.Triangle_area() << endl;
+    cout << "Choose your base side  : ";
+    cin >> var;
+
+    if (var == 1)
+        cout << "\n Thw height  is : " << t2.height1();
+    else if (var == 2) 
+        cout << "\n Thw height  is : " << t2.height2();
+    else if (var==3)
+        cout << "\n Thw height  is : " << t2.height3();
+}
+
+
+
+/*Cacu Razvan lab10 prb6 
+Define a class Shape that considers a shape with a name attribute as a pointer to character
+string. The class will contain a constructor without parameters, one with parameters, copy
+constructor and the assign operator will be overloaded. The class will also have getter/setter
+methods and a destructor. Derive in public mode a Circle class that adds an int type attribute
+to the radius and appropriate constructors considering also the attributes (name, radius) and a
+getter method for the radius and other methods that calculate the area and perimeter of the
+circle of radius r, value entered in main () from the keyboard.
+In the same mode define other classes (Square, Rectangle, etc.) Instantiate objects from the
+derived classes and display the area and the perimeter. The data will be introduced from the
+KB. Define a Circle object with parameters introduced from the KB, to copy to a new object
+and display its attributes. Define a Square object with parameters and another without
+parameters. Assign the instantiated object with the parameters to the one without parameters
+and display the attributes.
+*/
+#define _CRT_SECURE_NO_WARNINGS 
+
+#include <iostream>
+using namespace std;
+
+class Shapes {
+protected: char* name;
+public:
+        void setName(char* x) {
+                strcpy(x, name);
+        }
+        char* getName() { return name; }
+
+        Shapes() {
+                name = new char[30];
+        }
+        Shapes(const Shapes& s1) {
+                strcpy(name, s1.name);
+        }
+        ~Shapes() {
+                delete[] name;
+        }
+};
+class Circle : public Shapes {
+protected: int radius;
+public:
+        void setRadius(int radius) {
+                this->radius = radius;
+        }
+        int getRadius() {
+                return radius;
+        }
+
+        double Circle_area() {
+                return 3.14 * pow(radius, 2);
+        }
+        double Circle_perimeter() {
+                return 2 * 3.14 * radius;
+        }
+};
+class Square : public Shapes {
+protected: int side;
+public:
+        void setSide(int side) { this->side = side; }
+        int getSide() { return side; }
+
+        int Square_area() {
+                return pow(side, 2);
+        }
+        int Square_perimeter() {
+                return 4 * side;
+        }
+};
+class Rectangle : public Shapes {
+protected: int long_side, short_side;
+public:
+        void setLong_side(int l_side) {long_side = l_side; }
+        int getLong_side() { return long_side; }
+
+        void setShort_side(int s_side) {short_side = s_side; }
+        int getShort_side() { return short_side; }
+
+        int Rectangle_area() {
+                return long_side * short_side;
+        }
+        int Rectangle_perimeter() {
+                return 2 * (long_side + short_side);
+        }
+};
+int main()
+{
+        Circle circle;
+        Square square;
+        Rectangle rectangle;
+        int var, var1;
+        int res;
+
+        cout << "Enter the name of the shape(1 - rectangle,2-  circle or3- square): ";
+        cin >> res;
+
+        if (res==2) {
+                
+                cout << "Enter the radius: ";
+                cin >> var;
+                circle.setRadius(var);
+                cout << "The area is: " << circle.Circle_area() << endl;
+                cout << "The perimeter is: " << circle.Circle_perimeter() << endl;
+        }
+        else if (res==3) {
+
+                cout << "Enter the side: ";
+                cin >> var;
+                square.setSide(var);
+                cout << "The area is: " << square.Square_area() << endl;
+                cout << "The perimeter is: " << square.Square_perimeter() << endl;
+        }
+        else if (res==1) {
+        
+                cout << "Enter the long side: ";
+                cin >> var;
+                rectangle.setLong_side(var);
+                cout << "Enter the short side: ";
+                cin >> var;
+                rectangle.setShort_side(var);
+                cout << "The area is: " << rectangle.Rectangle_area() << endl;
+                cout << "The perimeter is: " << rectangle.Rectangle_perimeter() << endl;
+        }
+}
+
+
+
+
+
+/*Cacu Razvan lab10 prb7
+Consider a base class Circle defined by a protected attribute radius, that contains a constructor
+with parameters and a method that will determine the area of the circle. Consider other base
+class, Square with a protected attribute, length, similar to Circle class. Derive in public mode
+the class RoundSquare from both classes that will contain a constructor that will call the
+constructors from base classes and a method that will verify if the square of length l may be
+included in the circle of radius r. The derived class will also determine the perimeter of both
+shapes. Instantiate an object from the derived class (data from the KB) and determine the area
+and perimeter of the composed shapes. Display a message if the square may be included in the
+circle.
+
+*/
+
+#include <iostream>
+using namespace std;
+class Circle {
+protected: int radius;
+public:
+    Circle() { ; }
+    Circle(int radius) {
+        radius = radius;
+    }
+    int getRadius() {
+        return radius;
+    }
+    void setRadius(int radius) {
+        radius = radius;
+    }
+    double area() {
+        return 3.14 * pow(radius, 2);
+    }
+};
+class Square {
+protected: int side;
+public:
+    Square() {}
+    Square(int side) {
+        side = side;
+    }
+    void setSide(int side) {
+        side = side;
+    }
+    int getSide() {
+        return side;
+    }
+  
+};
+class CS : public Circle, public Square {
+public:
+    CS() { ; }
+    CS(int x) :Circle(x), Square(x) { ; }
+    void square_circle() {
+        double diagonal = side * sqrt(2);
+        if (diagonal == 2 * radius)
+            cout << "The square is circumscribed by the circle!\n";
+        else cout << "The square isn't circumscribed by the circle!\n";
+    }
+    double Square_perimeter() {
+        return pow(side, 2);
+    }
+    int Square_perimeter() {
+        return 4 * side;
+    }
+    double Circle_area() {
+        return 3.14 * pow(radius, 2);
+    }
+    double Circle_perimtere() {
+        return 2 * 3.14 * radius;
+    }
+};
+int main()
+{
+    Circle c;
+    Square s;
+    CS ob;
+    int x;
+    cout << "\nEnter a value for the side of the square: ";
+    cin >> x;
+    s.setSide(x);
+    ob.setSide(x);
+\
+    cout << "\nEnter a value for the radius: ";
+    cin >> x;
+    c.setRadius(x);
+    ob.setRadius(x);
+    ob.square_circle();
+    cout << "\nThe area of the square is: " << ob.Square_perimeter() << endl;
+    cout << "\nThe perimeter of the square is: " << ob.Square_perimeter() << endl;
+    cout << "\nThe area of the circle is: " << ob.Circle_area() << endl;
+    cout << "\nThe perimeter of the circle is: " << ob.Circle_perimtere() << endl;
+}

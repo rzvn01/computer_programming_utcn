@@ -1,0 +1,1270 @@
+﻿
+/*Cacu Razvan lab11 prb1
+* Considering the third example (simple inheritance, the base class Pozitie and the derived class
+Punct), resolve the following tasks:
+a. verify the order in which the constructors and destructors are called.
+b. extend the main function in order to use all the methods from the base and derived
+class.
+c. write a new class called Circle (attributes and methods) derived from Pozitie
+d. write a program that uses the classes mentioned before.
+*/
+#include <iostream>
+using namespace std;
+
+class Pozitie {
+protected:
+        int x, y;
+public:
+        Pozitie(int = 0, int = 0);
+        Pozitie(const Pozitie&);//exista unul implicit standard, aici unul diferit
+        ~Pozitie();
+        //void afisare();
+        //void deplasare(int, int);
+        virtual void afisare();
+        virtual void deplasare(int, int);
+};//CB
+// constructor
+Pozitie::Pozitie(int abs, int ord) {
+        x = abs; y = ord;
+        cout << "Constructor CB \"Pozitie\", ";
+        afisare();
+}
+//constructor de copiere
+Pozitie::Pozitie(const Pozitie& p) {
+        x = p.x;
+        y = p.y;
+        cout << "Constructor de copiere CB \"Pozitie\", ";
+        afisare();
+}
+// destructor
+Pozitie::~Pozitie() {
+        cout << "Destructor CB \"Pozitie \", ";
+        afisare();
+}
+void Pozitie::afisare() {
+        cout << " CB afisare: coordonate: x = " << x << ", y = " << y << "\n";
+}
+void Pozitie::deplasare(int dx, int dy) {
+        cout << "CB: deplasare" << endl;
+        x += dx; y += dy;
+}
+// clasa derivata
+class Punct : public Pozitie {
+        int vizibil;//ca un flag
+        char culoare;
+public:
+        Punct(int = 0, int = 0, char = 'A');
+        Punct(const Punct&);
+        ~Punct();
+        void arata() {
+                vizibil = 1;
+        }
+        void ascunde() {
+                vizibil = 0;
+        }
+        void coloreaza(char c) {
+                culoare = c;
+        }
+        void deplasare(int, int) override;
+        void afisare() override;
+};//CD
+// constructor
+Punct::Punct(int abs, int ord, char c) :Pozitie(abs, ord) {
+        vizibil = 0;
+        culoare = c;
+        cout << "Constructor CD \"Punct\", ";
+        afisare();//CD
+}
+// constructor de copiere
+Punct::Punct(const Punct& p) :Pozitie(p.x, p.y) {
+        vizibil = p.vizibil;
+        culoare = p.culoare;
+        cout << "Constructor de copiere CD \"Punct\", ";
+        afisare();//CD
+}
+// destructor
+Punct::~Punct() {
+        cout << "Destructor CD \"Punct\", ";
+        afisare();//CD
+}
+// redefinire functie de deplasare in clasa derivata
+void Punct::deplasare(int dx, int dy) {
+        if (vizibil) {
+                cout << " CD: Deplasare afisare CD\n";
+                x += dx;
+                y += dy;
+                afisare();//CD
+        }
+        else {
+                x += dx;
+                y += dy;
+                cout << "Deplasare prin CD afisare din CB\n";
+                Pozitie::afisare();
+        }
+}
+// redefinire metoda de afisare in clasa derivata
+void Punct::afisare() {
+        cout << "Pozitie: x = " << x << ", y = " << y;
+        cout << ", culoare: " << culoare;
+        if (vizibil) cout << ", vizibil \n";
+        else cout << ", invizibil \n";
+}
+class Circle :public Pozitie {
+   
+public : 
+        using Pozitie :: Pozitie;
+};
+int main() {
+        Pozitie pp0(7, 7);//base class object
+        cout << "\n Metode CB \n";
+        pp0.afisare();
+        pp0.deplasare(6, 9);
+        pp0.afisare();
+        cout << "\n Metode CD \n";
+        Punct p0(1, 1, 'v');//derived class object
+        p0.afisare();
+        Punct p1(p0);
+        p1.arata();
+        p1.deplasare(10, 10);
+        cout << "\nUpcasting - obiecte:\n";
+        pp0 = p0;//upcasting by objects
+        pp0.afisare();
+        cout << "\nUpcasting - pointeri:\n ";
+        Pozitie* p;//base class pointer
+        p = new Punct(100, 100, 'Z');//derived object to the base class pointer
+        //cout<<"\nAfisare CB: \n"; non virtual
+        cout << "\nAfisare CD: derived class object if virtual, else base class CB \n";
+        p->afisare();//afis invizibil
+        p = &pp0;
+        cout << "\nAfisare CB: base class object always\n";
+        p->afisare();
+        p = &p1;
+        cout << "\nAfisare CD: derived class object if virtual, else base class CB \n";
+        p->afisare();
+        Punct* pp;
+        pp = &p1;
+        cout << "\nAfisare CD: derived class object always\n";
+        pp->afisare();
+        cout << "\n Deplasare CD with 10, 10 \n";
+        pp->deplasare(10, 10);
+        cout << "\nAfisare CD: derived class object with ascunde()\n";
+        pp->ascunde();
+        pp->afisare();
+        cout << "\n Deplasare CD with 10, 10 and ascunde()\n";
+        pp->deplasare(10, 10);
+        cout << "\nAfisare direct from CB: derived object displayed with base class method always\n";
+                pp->Pozitie::afisare();
+        cout << "\nDowncasting:\n ";
+        Punct* pdown;//derived pointer
+        pdown = (Punct*)&pp0;//downcasting by base class object
+        cout << "\nAfisare CB: base class object using a derived pointer, else derived class CD \n";
+        pdown->afisare();
+        pdown = (Punct*)p;//downcasting by derived class object
+        cout << "\n Afisare din Derivat, Punct" << endl;
+        pdown->afisare();
+        Circle c1(1, 0);
+        cout << "\n Afisare din Cerc, Punct" << endl;
+        c1.afisare();
+        c1.deplasare(5, -10);
+        cout << "\n Afisare din Cerc, dupa deplasare , Punct" << endl;
+        c1.afisare();
+        return 0;
+}
+
+
+/*Cacu Razvan lab11 prb2
+* Extend the base class from the fourth example by adding some other virtual methods, which
+will be implemented in the derived classes (like the setter and getter for the value of greutate).
+*/
+
+#include<iostream>
+using namespace std;
+
+class Vehicul {
+protected:
+        int roti;
+        float greutate;
+public:
+        virtual void mesaj() {
+                cout << "Mesaj din clasa Vehicul\n";
+        }
+        virtual void setGreutate(int aux) {
+                greutate = aux;
+        };
+        virtual float getGreutate() {
+                return greutate; 
+        };
+};
+class Automobil : public Vehicul {
+        int incarcatura_pasageri;
+public:
+        void mesaj() override {
+                cout << "Mesaj din clasa Automobil\n";
+        }
+        virtual void setGreutate(int aux) override{
+                greutate = aux;
+        };
+        virtual float getGreutate() override{
+                return greutate;
+        };
+
+};
+class Camion : public Vehicul {
+        int incarcatura_pasageri;
+        float incarcatura_utila;
+public:
+        int pasageri() {
+                return incarcatura_pasageri;
+        }
+        virtual void setGreutate(int aux) override {
+                greutate = aux;
+        };
+        virtual float getGreutate() override {
+                return greutate;
+        };
+};
+class Barca : public Vehicul {
+        int incarcatura_pasageri;
+public:
+        int pasageri() {
+                return incarcatura_pasageri;
+        }
+        void mesaj() override {
+                cout << "Mesaj din clasa Barca\n";
+        }
+        virtual void setGreutate(int aux) override{
+                greutate = aux;
+        };
+        virtual float getGreutate() override{
+                return greutate;
+        };
+};
+
+
+
+int main() {
+ 
+        Vehicul monocicleta;
+        Automobil ford;
+        Camion semi;
+        Barca barca_de_pescuit;
+        monocicleta.mesaj();
+        ford.mesaj();
+        semi.mesaj(); 
+        barca_de_pescuit.mesaj();
+        
+        Vehicul* pmonocicleta;
+        Automobil* pford;
+        Camion* psemi;
+        Barca* pbarca_de_pescuit;
+        cout << "\n";
+        pmonocicleta = &monocicleta;
+        pmonocicleta->mesaj();
+        pford = &ford;
+        pford->mesaj();
+        psemi = &semi;
+        psemi->mesaj();//din CB
+        pbarca_de_pescuit = &barca_de_pescuit;
+        pbarca_de_pescuit->mesaj();
+        // apel prin intermediul unui pointer catre un obiect al clasei de baza
+        cout << "\n";
+        pmonocicleta = &monocicleta;
+        pmonocicleta->mesaj();//Vehicul
+        pmonocicleta = &ford;//upcasting
+        pmonocicleta->mesaj();//Automobil
+        pmonocicleta = &semi;//upcasting
+        pmonocicleta->mesaj();//Camion- Vehicul
+        pmonocicleta = &barca_de_pescuit;//upcasting
+        pmonocicleta->mesaj();//Barca
+        return 0;
+}
+
+
+��/*Cacu Razvan lab11 prb4
+
+* Declare a class called Animal that contains a pure virtual method (breath( )) and 2 virtual
+
+methods (eat( ) and sleep( )). The classes Dog and Fish inherit the first class in a public mode
+
+and implements the pure virtual method. The class Dog overrides the eat() method. The class
+
+Fish overrides the sleep( ) method. Instantiate the derived classes and call the specific
+
+methods. After that, define an array of Animal objects that will contain instances of the
+
+derived classes, if that s possible. If not, find an appropriate solution. */
+
+
+
+#include<iostream>
+
+using namespace std;
+
+
+
+class Animal {
+
+public:
+
+        virtual void breath() = 0;
+
+        virtual void eat();
+
+        virtual void sleep();
+
+};
+
+class Dog :Animal {
+
+public:
+
+        void breath() {
+
+                cout << "\nThe dog in breathing !";
+
+        }
+
+        void eat() override() {
+
+                cout << "\nThe dog is eating ! ";
+
+        }
+
+};
+
+class Fish :Animal {
+
+public:
+
+        void breath() {
+
+                cout << "\nThe fish in breathing !";
+
+        }
+
+        void sleep()override {
+
+                cout << "\nThe fish is sleeping !";
+
+        }
+
+};
+
+
+
+int main() {
+
+        /* Animal* arr; - we cant create intances of the Animal class because is a abstract class ! */
+
+        Dog d;
+
+        Fish f;
+
+        d.eat();
+
+        d.breath();
+
+        f.breath();
+
+        f.sleep();
+
+}
+
+
+
+��/*Cacu Razvan lab11 prb5
+
+* Define an abstract class that contains 3 pure virtual methods declarations for concatenating,
+
+interlacing two arrays of characters and for reverting the character array received as
+
+parameter. A subclass implements the methods declared in the base class. Instantiate the 2-nd
+
+class and display the results produced by applying the methods mentioned above upon some
+
+data read from the keyboard. Examine the error given by the attempt of instantiating the base
+
+class.*/
+
+#define _CRT_SECURE_NO_WARNINGS
+
+#include<iostream>
+
+using namespace std;
+
+
+
+class String {
+
+public:
+
+        virtual char* concatenating(char* first, char* second) = 0;
+
+        virtual char* interlacing(char* first, char* second) = 0;
+
+        virtual char* reverting(char*) = 0;
+
+};
+
+class Subclass :String {
+
+public:
+
+        char* concatenating(char* first, char* second) {
+
+                char* aux;
+
+                int res =1+ sizeof(first) + sizeof(second);
+
+                aux = new(nothrow) char[res];
+
+                strcpy(aux, first);
+
+                strcat(aux, second);
+
+                return aux;
+
+
+
+        };
+
+         char* interlacing(char* a, char* b) {
+
+                char* res = new char[strlen(a)+strlen(b)];
+
+
+
+                int i{}, k{};
+
+                for (; k < min(strlen(a), strlen(b)); i += 2) {
+
+                        res[i] = a[k];
+
+                        res[i + 1] = b[k++];
+
+                }
+
+
+
+                int mx = max(strlen(a), strlen(b));
+
+                char* aux;
+
+                if (mx == strlen(a))
+
+                        aux = a;
+
+                else
+
+                        aux = b;
+
+
+
+                for (; k < mx; i++)
+
+                        res[i] = aux[k++];
+
+
+
+                return res;
+
+        }
+
+        char* reverting(char* str) {
+
+                for (int i = 0; i < strlen(str) / 2; i++)
+
+                {
+
+                        char temp = str[i];
+
+                        str[i] = str[strlen(str) - i - 1];
+
+                        str[strlen(str) - i - 1] = temp;
+
+                }
+
+                return str;
+
+        }
+
+};
+
+
+
+int main() {
+
+        Subclass s1;
+
+        char first [30],second[30];
+
+        cout << "Enter the first string : ";
+
+        cin.getline(first, 30);
+
+        cout << "Enter the first second : ";
+
+        cin.getline(second, 30);
+
+        char* res = s1.concatenating(first, second);
+
+        cout << "\nThe result of concatenating is : " << res;
+
+        res = s1.interlacing(first, second);
+
+        cout << "\nThe result of interlacing is : " ;
+
+        for (int i{}; i < strlen(first) + strlen(second); i++)
+
+                cout << res[i];
+
+        res = s1.reverting(first);
+
+        cout << "\nThe result of reverting the first string is : " << res;
+
+        res = s1.reverting(second);
+
+        cout << "\nThe result of reverting the second string is : " << res;
+
+}
+
+
+
+��/*Cacu Razvan lab11 prb6
+
+* Define a class called Record that stores the data related to a melody (artist, title, duration). An
+
+abstract class (Playlist) contains as private attribute a pointer to an array of records. The
+
+pointer is initialized in the constructor by a memory allocation process (the number of records
+
+is defined by the user). The class contains accessor and mutator methods for each of a record s
+
+fields and an abstract method (pure virtual) that sorts the records array according to a criteria
+
+coded in the received parameter (1=sorting by title, 2=sorting by artist, 3=sorting by
+
+duration). The abstract method is implemented inside another class (PlaylistImplementation)
+
+that inherits the Playlist class.
+
+In the main( ) function, instantiate the PlaylistImplementation class and initialize and use all
+
+the related data and methods*/
+
+
+
+#define _CRT_SECURE_NO_WARNINGS
+
+
+
+#include<iostream>
+
+using namespace std;
+
+int artist_sort(const void* a, const void* b);
+
+int title_sort(const void* a, const void* b);
+
+int duration_sort(const void* a, const void* b);
+
+
+
+class Record {
+
+        char artist[20], title[20];
+
+        int duration;
+
+public:
+
+        Record() {
+
+
+
+                strcpy(artist, "No artist !");
+
+                strcpy(title, "No title !");
+
+                duration = 0;
+
+        }
+
+        Record(char* art, char* tit, int dur) {
+
+
+
+                strcpy(artist, art);
+
+                strcpy(title, tit);
+
+                duration = dur;
+
+        }
+
+        void setArtist(char* aux) {
+
+                strcpy(artist, aux);
+
+        }
+
+        char* getArtist() {
+
+                return artist;
+
+        }
+
+        void setTitle(char* aux) {
+
+                strcpy(title, aux);
+
+        }
+
+        char* getTitle() {
+
+                return title;
+
+        }
+
+        void setDuration(int aux) {
+
+                duration = aux;
+
+        }
+
+        int getDuration() {
+
+                return duration;
+
+        }
+
+        ~Record() {
+
+                if (artist != NULL)
+
+                        delete[]artist;
+
+                if (title != NULL)
+
+                        delete[]title;
+
+        }
+
+};
+
+
+
+class Playlist {
+
+        Record* arr;
+
+public:
+
+        char* getTitle(int i) { return arr[i].getTitle(); }
+
+        char* getArtist(int i) { return arr[i].getArtist(); }
+
+        int getDuration(int i) { return arr[i].getDuration(); }
+
+
+
+        void setTitle(char* tit, int i) { arr[i].setTitle(tit); }
+
+        void setArtist(char* art, int i) { arr[i].setArtist(art); }
+
+        void setDuration(int dur, int i) { arr[i].setDuration(dur); }
+
+        void setArr_dimension(int x) {
+
+                arr = new(nothrow)Record[x];
+
+        }
+
+        Record* getArr() { return arr; }
+
+        virtual Record* sort(int) = 0;
+
+};
+
+class PlaylistImplementation :public Playlist {
+
+        int type, x;
+
+public:
+
+        PlaylistImplementation(int a = 1) {
+
+                setArr_dimension(a);
+
+                x = a;
+
+        }
+
+        virtual Record* sort(int)override {
+
+
+
+                Record* str = getArr();
+
+                if (type == 1)
+
+                        qsort(str, x, sizeof(Record), artist_sort);
+
+                else if (type == 2)
+
+                        qsort(str, x, sizeof(Record), title_sort);
+
+                else
+
+                        qsort(str, x, sizeof(Record), duration_sort);
+
+                return str;
+
+        }
+
+
+
+};
+
+
+
+int main() {
+
+        int number;
+
+        cout << "\n Enter the number of records : ";
+
+        cin >> number;
+
+        PlaylistImplementation t(number);
+
+        char str[20];
+
+        int dur;
+
+        for (int i{}; i < number; i++) {
+
+                getchar();
+
+                cout << "\nEnter the artist : ";
+
+                cin.getline(str, 20);
+
+                t.setArtist(str, i);
+
+                cout << "\nEnter the title:";
+
+                cin.getline(str, 20);
+
+                t.setTitle(str, i);
+
+                cout << "\nEnter the duration of the song : ";
+
+                cin >> dur;
+
+                t.setDuration(dur, i);
+
+
+
+        }
+
+        int choice = 1;
+
+
+
+                cout << "\nSort type ? (1-artist ,2-title,3-duration) : ";
+
+                cin >> choice;
+
+                while (choice != 1 && choice != 2 && choice != 3) {
+
+                        cout << "\nSort type ? (1-artist ,2-title,3-duration) : ";
+
+                        cin >> choice;
+
+           }
+
+        
+
+        Record* arr = t.sort(choice);
+
+        for (int i{}; i < number; i++) {
+
+                cout << "\nThe artist : " << arr[i].getArtist();
+
+                cout << "\nThe title:" << arr[i].getTitle();
+
+                cout << "\nEnter the duration of the song : " << arr[i].getDuration();
+
+        }
+
+        
+
+}
+
+int duration_sort(const void* a, const void* b) {
+
+        Record* x = (Record*)a;
+
+        Record* y = (Record*)b;
+
+        int t = x->getDuration();
+
+        int p = y->getDuration();
+
+        if (t > p)
+
+                return t - p;
+
+        else
+
+                return p - t;
+
+}
+
+int artist_sort(const void* a, const void* b) {
+
+        Record* x = (Record*)a;
+
+        Record* y = (Record*)b;
+
+        char* t = x->getArtist();
+
+        char* p = y->getArtist();
+
+        return strcmp(t, p);
+
+}
+
+int title_sort(const void* a, const void* b) {
+
+        Record* x = (Record*)a;
+
+        Record* y = (Record*)b;
+
+        char* t = x->getTitle();
+
+        char* p = y->getTitle();
+
+        return strcmp(t, p);
+
+}
+
+
+/*Cacu Razvan lab11 prb7
+ Write a C++ application that defines the abstract base class AbstractQuadrilateral having as
+protected attributes four instances of the Point class (a pair of x and y coordinates, getter and
+setter methods) that represent the quadrilateral's corners. Declare two pure virtual methods for
+determining the area and the perimeter of the shape. Implement the derived class
+ActualQuadrilateral that implements the inherited abstract methods and has another method
+for determining whether the quadrilateral is a square, rectangle, or irregular quadrilateral.
+Instantiate the derived class and call the defined methods. The area will be determined
+depending on the quadrilateral type. The irregularr convex quadrilateral are wil be determined
+considering the following formula that express the area in terms of the sides a, b, c, d, the
+semiperimeter s, and the diagonals p, q:
+A=sqrt {(s-a)(s-b)(s-c)(s-d)-1/4(ac+bd+pq)(ac+bd-pq)}.
+*/
+
+
+#include<iostream>
+using namespace std;
+
+
+class Point {
+        int x, y;
+public:
+        int getX() { return x; }
+        void setX(int a) { x = a; }
+        int getY() { return y; }
+        void setY(int a) { y = a; }
+        Point(int a, int b) {
+                x = a;
+                y = b;
+        }
+        Point() {
+                x = 1, y = 2;
+        }
+
+        ~Point() {}
+        bool operator==(const Point& p2) {
+
+                if (x == p2.x && y == p2.y)
+                        return true;
+                else
+                        return false;
+
+        }
+};
+
+bool collinear(Point&, Point&, Point&);
+bool doIntersect(Point& p1, Point& q1, Point& p2, Point& q2);
+int orientation(Point& p, Point& q, Point& r);
+int  quadrilateral(Point& p1, Point& p2, Point& p3, Point& p4);
+
+class AbstractQuadrilateral {
+        Point p1, p2, p3, p4;
+
+public:
+        Point getP1() { return p1; }
+        void setP1(Point& a) {
+                p1.setX(a.getX());
+                p1.setY(a.getY());
+        }
+
+        Point getP2() { return p2; }
+        void setP2(Point& a) {
+                p2.setX(a.getX());
+                p2.setY(a.getY());
+        }
+
+        Point getP3() { return p3; }
+        void setP3(Point& a) {
+                p3.setX(a.getX());
+                p3.setY(a.getY());
+        }
+
+        Point getP4() { return p4; }
+        void setP4(Point& a) {
+                p4.setX(a.getX());
+                p4.setY(a.getY());
+        }
+        float getA() {
+
+                return sqrt(pow(p2.getX() - p1.getX(), 2) + pow(p2.getY() - p1.getY(), 2) * 1.0);
+        }
+        float getB() {
+                return  sqrt(pow(p3.getX() - p2.getX(), 2) + pow(p3.getY() - p1.getY(), 2) * 1.0);
+        }
+        float getC() {
+                return sqrt(pow(p4.getX() - p3.getX(), 2) + pow(p4.getY() - p3.getY(), 2) * 1.0);
+        }
+        float getD() {
+                return sqrt(pow(p1.getX() - p4.getX(), 2) + pow(p1.getY() - p4.getY(), 2) * 1.0);
+        }
+        float getAC() {
+                return sqrt(pow(p3.getX() - p1.getX(), 2) + pow(p3.getY() - p1.getY(), 2) * 1.0);
+        }
+        float getBD() {
+                return sqrt(pow(p4.getX() - p2.getX(), 2) + pow(p4.getY() - p2.getY(), 2) * 1.0);
+        }
+        virtual float getArea() = 0;
+
+        virtual float getPerimeter() = 0;
+
+
+
+
+
+};
+class ActualQuadrilateral :public AbstractQuadrilateral {
+
+public:
+
+        float getPerimeter() {
+                float a = getA();
+                float b = getB();
+                float c = getC();
+                float d = getD();
+                float ac = getAC();
+                float bd = getBD();
+                float pq = ac * bd;
+
+                if (a == b == c == d)
+                        cout << "\nThe shape  is a square ! ";
+                else if (a == c && d == b)
+                        cout << "\nThe shape  is a rectangular ";
+                else
+                        cout << "\nThe shape  is a irregular quadrilateral !";
+                return a + b + c + d;
+        }
+
+        float getArea() {
+                float a = getA();
+                float b = getB();
+                float c = getC();
+                float d = getD();
+                float ac = getAC();
+                float bd = getBD();
+                float pq = ac * bd;
+                float semip = (a + b + c + d) / 2;
+
+                return  sqrt((semip - a) * (semip - b) * (semip - c) * (semip - d) - 1 / 4 * (ac + bd + pq) * (ac + bd - pq) * 1.0);
+        }
+        ActualQuadrilateral(Point& p, Point& q, Point& t, Point& r) {
+                setP1(p);
+                setP2(q);
+                setP3(t);
+                setP4(r);
+        }
+        ActualQuadrilateral() {
+                cout << "Constructor called !";
+        }
+
+
+};
+
+
+int main() {
+
+        Point p1(0, 0), p2(3, 0), p3(1, 1), p4(0, 1);
+        ActualQuadrilateral aq(p1, p2, p3, p4);
+
+        int a = quadrilateral(p1, p2, p3, p4);
+        if (a == 0)
+        {
+                cout << "\nThe points dont form a quadrilateral !";
+                exit(1);
+        }
+        else if (a == 1)
+        {
+                cout << "\nThe points form a convex quadrilateral !";
+                cout << "\nThe perimeter is : " << aq.getPerimeter();
+                cout << "\nThe area is : " << aq.getArea();
+        }
+        else
+        {
+                cout << "\nThe points form a concave quadrilateral !";
+                cout << "\nThe perimeter is : " << aq.getPerimeter();
+        }
+
+
+};
+int  quadrilateral(Point& p1, Point& p2, Point& p3, Point& p4) {
+
+        if ((p1 == p2) == true || (p1 == p3) == true || (p1 == p4) == true || (p2 == p3) == true || (p2 == p4) == true || (p4 == p3) == true)
+                return 0;
+        if (collinear(p1, p2, p3) == true || collinear(p1, p2, p4) == true || collinear(p1, p3, p4) == true || collinear(p2, p3, p4) == true)
+                return 0;
+        int check = 0;
+
+        if (doIntersect(p1, p2, p3, p4))
+                check = 1;
+        if (doIntersect(p1, p3, p2, p4))
+                check = 1;
+        if (doIntersect(p1, p2, p4, p3))
+                check = 1;
+
+        if (check == 0)
+                return 3;
+        else
+                return 1;
+}
+int orientation(Point& p, Point& q, Point& r)
+{
+        int val = (q.getY() - p.getY()) * (r.getX() - q.getX()) - (q.getX() - p.getX()) * (r.getY() - q.getY());
+
+        if (val == 0)
+                return 0;
+        else
+                return (val > 0) ? 1 : 2;
+}
+
+
+bool doIntersect(Point& p1, Point& q1, Point& p2, Point& q2)
+{
+        int o1 = orientation(p1, q1, p2);
+        int o2 = orientation(p1, q1, q2);
+        int o3 = orientation(p2, q2, p1);
+        int o4 = orientation(p2, q2, q1);
+
+        if (o1 != o2 && o3 != o4)
+                return true;
+
+        return false;
+}
+bool collinear(Point& first, Point& second, Point& third)
+{
+
+        if ((third.getY() - second.getY()) * (second.getX() - first.getX()) == (second.getY() - first.getY()) * (third.getX() - second.getX()))
+                return true;
+        else
+                return false;
+} 
+
+
+
+/*Cacu Razvan lab11 prb8
+Consider the Fraction class that has two protected attributes a and b for the nominator and
+denominator and two corresponding setter and getter methods. Declare a virtual method
+named simplify( ) that simplifies a fraction using the greatest common divider determined
+using the % operator. Define an explicit constructor without parameters that initializes a with
+0 and b with 1 and another explicit constructor with two integer parameters. For this
+constructor is verified if b!=0 before to be called. Overload the addition, subtraction,
+multiplication and division operators (+, -, *, /) using friend functions and simplify (if
+necessary) the obtained results. Define a class named Fraction_ext that inherits in a public
+mode the Fraction class and has a parameterized constructor that calls the constructor from
+the base class. The derived class redefines the implementation of simplify( ) by determining
+the greatest common divider using the differences based algorithm. Display an appropriate
+message in this method. Overload the composed addition, subtraction, multiplication and
+division operators (+=, -=, *=, /=) using member methods. Use member methods for
+overloading the post-increment and post-decrement operators that will add 1 to the value of a
+Fraction_ext instance. Instantiate 2 Fraction objects without parameters. Set the attributes
+using values read from the keyboard. Perform the operations implemented with friend
+functions from the base class and initialize another 4 objects with the obtained results.
+Simplify the results. Instantiate two objects of Fraction_ext type with data from the KB.
+Perform the implemented operations with the member functions and methods. Assign the
+operation results to other 4 existing Fraction_ext objects. Use for operations copies of the
+initial objects. Simplify and display the obtained results. Verify the possibility of using both
+simplify( ) methods (base and derived class) using instances of the base and derived classes
+and a pointer of Fraction type.*/
+
+#include<iostream>
+#include<assert.h>
+using namespace std;
+
+class Fraction {
+protected:
+        int a, b;
+public:
+        Fraction() {
+                a = 0;
+                b = 1;
+        }
+        Fraction(int nominator, int denominator) {
+                a = nominator;
+                b = denominator;
+        }
+
+        void setA(int aux) { a = aux; }
+        int getA() { return a; }
+
+        void setB(int aux) { b = aux; }
+        int getB() { return b; }
+
+        virtual Fraction simplify() {
+                Fraction aux;
+                int t = gcd(a, b);
+                aux.setA(a / t);
+                aux.setB(b / t);
+                return aux;
+        }
+        virtual int gcd(int a, int b) {
+
+                int minn = 1;
+                for (int i = 1; i < min(a, b); i++)
+                        if (a % i == 0 && b % i == 0)
+                                minn = i;
+                return minn;
+        }
+        friend Fraction operator+(Fraction& first, Fraction& second);
+        friend Fraction operator-(Fraction& first, Fraction& second);
+        friend Fraction operator*(Fraction& first, Fraction& second);
+        friend Fraction operator/(Fraction& first, Fraction& second);
+
+};
+class Fraction_ext : public Fraction {
+public:
+        using Fraction::Fraction;
+
+        int gcd(int a, int b) override
+        {
+                if (a == 0)
+                        return b;
+
+                if (b == 0)
+                        return a;
+
+                if (a == b)
+                        return a;
+
+                if (a > b)
+                        return gcd(a - b, b);
+                return gcd(a, b - a);
+        }
+        Fraction operator+(Fraction_ext& second) {
+                Fraction aux;
+                aux.setA(a * second.getB() + second.getA() * b);
+                aux.setB(b * second.getB());
+                aux = aux.simplify();
+                return aux;
+        }
+        Fraction operator-(Fraction_ext& second) {
+                Fraction aux;
+                aux.setA(a * second.getB() - second.getA() * b);
+                aux.setB(b * second.getB());
+                aux = aux.simplify();
+                return aux;
+        }
+        Fraction operator*(Fraction_ext& second) {
+                Fraction aux;
+                aux.setA(a * second.getA());
+                aux.setB(b * second.getB());
+                aux = aux.simplify();
+                return aux;
+        }
+        Fraction operator/(Fraction_ext& second) {
+                Fraction aux;
+                aux.setA(a * second.getB());
+                aux.setB(b * second.getA());
+                aux = aux.simplify();
+                return aux;
+        }
+        Fraction operator++(int x) {
+                a = a + b;
+                return *this;
+        }
+        Fraction operator--(int x) {
+                a = a - b;
+                return *this;
+        }
+};
+int main() {
+        Fraction_ext f1, f2;
+        int value;
+        cout << "\nEnter the nominator of the first fraction : ";
+        cin >> value;
+        f1.setA(value);
+        cout << "\nEnter the denominator of the first fraction : ";
+        cin >> value;
+        assert(value != 0);
+        f1.setB(value);
+        cout << "\nEnter the nominator of the second fraction : ";
+        cin >> value;
+        f2.setA(value);
+        cout << "\nEnter the denominator of the second fraction : ";
+        cin >> value;
+        assert(value != 0);
+        f2.setB(value);
+
+        Fraction res = f1 + f2;
+        cout << "\nThe result of addition is :" << res.getA() << "/" << res.getB();
+        res = f1 - f2;
+        cout << "\nThe result of difference is :" << res.getA() << "/" << res.getB();
+        res = f1 *f2;
+        cout << "\nThe result of product is :" << res.getA() << "/" << res.getB();
+        res = f1 / f2;
+        cout << "\nThe result of division is :" << res.getA() << "/" << res.getB();
+        res = f1--;;
+        cout << "\nThe result of substracing 1 is :" << f1.getA() << "/" << f1.getB();
+        res = f2++;;
+        cout << "\nThe result of adding 1 is :" << f2.getA() << "/" << f2.getB();
+}
+
+Fraction operator+(Fraction& first, Fraction& second) {
+        Fraction aux;
+        aux.setA(first.a * second.b + second.a * first.b);
+        aux.setB(first.b * second.b);
+        aux = aux.simplify();
+        return aux;
+}
+Fraction operator-(Fraction& first, Fraction& second) {
+        Fraction aux;
+        aux.a = first.a * second.b - second.a * first.b;
+        aux.b = first.b * second.b;
+        aux = aux.simplify();
+        return aux;
+}
+Fraction operator*(Fraction& first, Fraction& second) {
+        Fraction aux;
+        aux.a = first.a * second.a;
+        aux.b = first.b * second.b;
+        aux = aux.simplify();
+        return aux;
+}
+Fraction operator/(Fraction& first, Fraction& second) {
+        Fraction aux;
+        aux.a = first.a * second.b;
+        aux.b = first.b * second.a;
+        aux = aux.simplify();
+        return aux;
+}

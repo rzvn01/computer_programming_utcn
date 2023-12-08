@@ -1,0 +1,744 @@
+
+/*Cacu Razvan lab9 prb1
+* Implement a class called Complex that overloads the arithmetical operators (+, -, *, /) for performing the
+corresponding operations when applied to Complex instances (use both friend functions (*, /) and member
+methods (+, -)).
+Note: the complex numbers will have a real and an imaginary part, both coefficients being represented as
+real numbers.
+*/
+
+#include<iostream>
+using namespace std;
+
+class Complex {
+        double real, imag;
+public: 
+        void setReal(double x) { real = x; }
+        double getReal() { return real; }
+
+        void setImag(double x) { imag = x; }
+        double getImag() { return imag; }
+        Complex operator+(Complex c1) {
+                Complex aux;
+                aux.real = this->real + c1.real;
+                aux.imag = this->imag + c1.imag;
+                return aux;
+        }
+        Complex operator-(Complex c1) {
+                Complex aux;
+                aux.real = this->real - c1.real;
+                aux.imag = this->imag - c1.imag;
+                return aux;
+        }
+        Complex friend  operator*(Complex c1,Complex c2);
+        Complex friend  operator/(Complex c1, Complex c2);
+};
+Complex operator*(Complex c1,Complex c2) {
+
+        Complex aux;
+        aux.real = c1.real * c2.real - c1.imag * c2.imag;
+        aux.imag = c1.real * c2.imag + c1.imag * c2.real;
+        return aux;
+
+}
+Complex operator/(Complex c1, Complex c2) {
+
+        Complex rez;
+        rez.real = (c1.real * c2.real + c1.imag * c2.imag) / (c2.real * c2.real + c2.imag * c2.imag);
+        rez.imag = (c1.imag * c2.real - c1.real * c2.imag) / (c2.real * c2.real + c2.imag * c2.imag);
+        return rez;
+
+}
+
+int main() {
+        int val;
+        Complex c1, c2;
+        cout << "\nEnter the real part of the first : ";
+        cin >> val;
+        c1.setReal(val);
+        cout << "\nEnter the imaginary part of the first complex number : ";
+        cin >> val;
+        c1.setImag(val);
+        cout << "\nEnter the real part of the second : ";
+        cin >> val;
+        c2.setReal(val);
+        cout << "\nEnter the imaginary part of the second complex number : ";
+        cin >> val;
+        c2.setImag(val);
+        Complex add = c1 + c2;
+        Complex substract = c1 - c2;
+        Complex product = c1 * c2;
+        Complex division = c1 / c2;
+        cout << "\nThe result of add is : " << add.getReal() << " +" << add.getImag()<<"i";
+        cout << "\nThe result of substract is : " << substract.getReal() << " +" <<substract.getImag() << "i";
+        cout << "\nThe result of product is : " << product.getReal() << " +" << product.getImag() << "i";
+        cout << "\nThe result of division is : " << division.getReal() << " +" << division.getImag() << "i";
+
+
+}
+
+
+/*Cacu Razvan lab9 prb2 
+Modify the operator overload - allowing multiple occurrences of the initial string from example 1 to be
+dropped. Analyze the application functionalities.*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+using namespace std;
+
+const int dim = 31;//30+1 pt. \0
+class String {
+        char* sir;
+public:
+        String() {
+                //constructorul default nualoca spatiu, de aceea unul fara parametri
+                sir = new (nothrow) char[dim];
+        }
+        String(char* x) {
+                sir = new (nothrow) char[strlen(x) + 1];//se mai rezerva pentru \0 � destructorul va lucra corect
+                strcpy(sir, x);
+        }
+        String(const String& x) {//copy constructor
+                sir = new (nothrow) char[strlen(x.sir) + 1];
+                strcpy(sir, x.sir);
+                cout << "\nCopy cons.";
+        }
+        String& operator= (const String& x) {//assign
+                if (this == &x) return *this;
+                delete[] sir;//eliberez sir din obiectul current pt. ca pot diferi ca dimensiune, echivalent cu: this-> ~String();
+                sir = new (nothrow) char[strlen(x.sir) + 1];//aloc spatiu pentru sir pornind de la sirul de asignat
+                strcpy(sir, x.sir);
+                cout << "\nAssign overload";
+                return *this;
+        }
+        String(String&& a) {//move constructor
+                sir = a.sir;
+                cout << "\nMove cons.";
+                a.sir = nullptr;
+        }
+        ~String() {
+                if (sir != nullptr) cout << "\nCall Destructor";
+                else cout << "\nDestructor is called for nullptr";
+                delete[] sir;
+        }
+        void setSir(char* x) {
+                strcpy(sir, x);
+        }
+        char* getSir() {
+                return sir;
+        }
+        String operator+ (String x1) { // supraincarcare cu metoda membra
+                String rez;
+                rez.~String();
+                rez.sir = new (nothrow) char[strlen(this->sir) + strlen(x1.sir) + 1];
+                strcpy(rez.sir, sir);
+                strcat(rez.sir, x1.sir);
+                return rez;
+        }
+        char operator[ ](int poz) { // supraincarcarea op [ ] pt. returnarea unui
+                char rez; // caracter din pozitia data in sir
+                rez = sir[poz];
+                return rez;
+        }
+        //functia prietena care supraincarca operatorul de scadere este definite in exteriorul clasei mai jos
+        friend String operator- (const String& x1, const String& x2);
+};//String
+// supraincarc. op. prin f-ctie friend, in exteriorul clasei
+String operator- (const String& x1, const String& x2) {
+        char* aux;
+        aux = strstr(x1.sir, x2.sir); // adresa unde �ncepe sirul x2.sir in sirul x1.sir
+        if (aux == NULL) // sirul nu se gaseste in x1.sir
+                return String(x1.sir);
+        int p = strlen(x2.sir);
+        char* arr;
+        arr = new char[strlen(x1.sir) + 1];
+        strcpy(arr, x1.sir);
+        while (aux != NULL)
+        {
+                strcpy(arr + (aux - arr), arr + (aux - arr) + p);
+                aux = strstr(arr, x2.sir);
+        }
+        return String(arr);
+}
+
+int main() {
+        char xx[dim];
+        cout << "\nThe first string smaller than  " << dim << " :";
+        gets_s(xx, _countof(xx));
+        String ob1(xx);
+        cout << "\nThe second string smaller than " << dim << " :";
+        cin.getline(xx, sizeof(xx));
+        String ob2(xx);
+        String ob3;
+        ob3 = ob1 + ob2;//assign
+        cout << "\nThe string obtained after the + operation :  " << ob3.getSir();
+        cout << "\nThe string you want to substract from the first (smaller than  " << dim << " ) :";
+        gets_s(xx, _countof(xx));
+        String ob4(xx);
+        String ob5 = ob1 - ob4;//copy constructor
+        cout << "\nThe fifth string obtain using the  copy constructor : " << ob5.getSir();
+        String ob6;
+        cout << "\n New string smaller than " << dim << " :";
+        cin.getline(xx, _countof(xx));
+        ob6.setSir(xx);
+        cout << "The string  : " << ob6.getSir();
+        ob3.setSir(xx);
+        cout << "\nThe string ob3 setted to ob6  " << ob3.getSir();
+        char c = ob3[0];
+        cout << "\nThe first char is : " << c;
+}
+
+
+
+/*Cacu Razvan lab9 prb5
+/*Overload the [ ] operator for the Department class that contains an array of Employee objects (that has as
+variables the name (character array) and the salary (float)). When the operator is applied to a Department
+object, it returns (or displays) all the data related to the Employee object with that index.
+*/
+
+#include  <iostream>
+using  namespace  std;
+
+
+class Department;
+
+class Employee {
+        char name[20];
+        float salary;
+        friend Department;
+public:
+        char* getName() { return name; }
+        float getSalary() { return salary; }
+        void setName(char* aux) {
+                strcpy_s(name, aux);
+        }
+                void setSalary(float aux) {
+                        salary = aux;
+                }
+};
+
+class Department {
+        Employee* x;
+        int n;
+public:
+        Department() {
+                n = 3;
+                x = new Employee[3];
+        }
+        Department(int numar) {
+                n = numar;
+                x = new Employee[n];
+        }
+void setEmployee(Employee* aux){ 
+        for (int i{}; i < n; i++)
+        {
+                strcpy_s(x[i].name, aux[i].name);
+                x[i].salary = aux[i].salary;
+        }
+        }
+void operator[](int aux) {
+        if (aux >= 0 && aux < n)
+        {
+                cout << "\nThe name of the employee " << x[aux].getName();
+                cout << "\n Salary : " << x[aux].getSalary();
+
+        }
+}
+};
+
+        int  main() {
+                int  var;
+                cout << "Enter the number of employees : ";
+                cin >> var;
+                Department d1(var);
+                char name[20];
+                float sal;
+                Employee* res = new Employee[var];
+                for (int i{}; i < var; i++) {
+                        getchar();
+                        cout << "\nEnter the name of the employee : ";
+                        cin.getline(name, 20);
+                        res[i].setName(name);
+                        cout << "\n Enter the salary : ";
+                        cin >> sal;
+                        res[i].setSalary(sal);
+                }
+                d1.setEmployee(res);
+                int x;
+                cout << "\nEnter the index of the employee you want to check : ";
+                cin >> x;
+                        d1[x-1];
+        }
+
+
+/*Cacu Razvna lab9 prb7
+ Write the program that considers a MyClass class with three int-type attributes. The class considers on the
+basis of the overload mechanism public methods int myFunction (�), which depending on the number of
+parameters received, returns either the value received (1 parameter) or the product of the input variables (0- all,
+2, 3 parameters). Instantiate an object of the class in main(), set the attributes using dedicated setter methods
+from the class, and display the values at method calls.*/
+
+
+#include<iostream>
+using namespace std;
+
+
+class MyClass {
+        int x, y, z;
+public: 
+        void setX(int a) {
+                x = a;
+        }
+        int getX() {
+                return x;
+        }
+        void setY(int a) {
+                y = a;
+        }
+        int getY() {
+                return y;
+        }
+        void setZ(int a) {
+                z = a;
+        }
+        int getZ() {
+                return z;
+        }
+        int myFunction(int a) {
+                return a;
+        }
+        int myFunction() {
+                return x * y * z;
+        }
+        int myFunction(int a, int b) {
+                return a * b;
+        }
+        int myFunction(int a, int b, int c) {
+                return a * b * c;
+        }
+};
+
+int main() {
+        MyClass m1;
+        m1.setX(10);
+        m1.setY(5);
+        m1.setZ(2);
+        cout << "\nThe value of x is : " << m1.getX();
+        cout << "\nThe value of y is : " << m1.getY();        
+        cout << "\nThe value of z is : " << m1.getZ();
+        cout << " \nThe result of calling the void function : " << m1.myFunction();
+        cout << " \nThe result of calling the  function  with 1 parameter : " << m1.myFunction(13);
+        cout << " \nThe result of calling the  function  with 2 parameter : " << m1.myFunction(m1.getY(), 3);
+        cout << " \nThe result of calling the  function  with 3 parameter : " << m1.myFunction(m1.getX(), 3,m1.getZ());
+
+}
+
+
+
+/*Cacu Razvna lab9 prb8
+Write the program that uses a class called Calculator that has as overloaded public methods:
+- int calcul(int x) that returns the square value of x;
+- int calcul(int x, int y) that returns the product of x and y;
+- double calcul(int x, int y, int z) that returns the result of f(x,y,z) = (x-y)(x+z)/2.;
+The program receives the parameters from the command line.
+Consider the case when all the methods are static. Is it possible to have in the same time static and non-static
+public methods? Analyze the case that the class has 3 private attributes of type int, x, y, z, that are modified
+with setter adequate methods. What must be modified to perform the required operations?
+*/
+
+
+#include<iostream>
+using namespace std;
+
+class Calculator {
+        int x, y, z;
+public: 
+
+        void setX(int a) { x = a; }
+        int getX() { return x; }
+
+        void setY(int a) { y = a; }
+        int getY() { return y; }
+        
+        void setZ(int a) { z = a; }
+        int getZ() { return z; }
+
+
+        int calcul(int a) { return a * a; };
+        int calcul(int a, int t) { return a * t; } 
+        double calcul(int x, int y, int z) { return (x - y)*(x + z) / 2; } 
+};
+
+int main(int argc, char* argv[])
+{
+        Calculator c1;
+        
+        c1.setX(atoi(argv[1]));
+        c1.setY(atoi(argv[2]));
+        c1.setZ(atoi(argv[3]));
+        cout << "\nThe value of x is : " << c1.getX();
+        cout << "\nThe value of y is : " << c1.getY();
+        cout << "\nThe value of z is : " << c1.getZ();
+        cout << "\n The calcul function called with 1 parameter(x): " << c1.calcul(c1.getX());
+        cout << "\n The calcul function called with 2 parameter(15,y): " << c1.calcul(15,c1.getY());
+        cout << "\n The calcul function called with 3 parameter(x,y,z): " << c1.calcul(c1.getX(),c1.getY(),c1.getZ());
+}
+/*to make the last part  : - added setters/getters , made 3 private int variables , used the getters in main  */
+
+
+
+
+/*Cacu Razvan lab9 prb9 
+Define a class called Student, containing as private member : name(pointer to character array), marks
+(integer pointer) and no_marks(integer).The class also contains a constructor with parameters, a copy / move
+constructor, a method for assign operator overloading, a method for marks setting, a display method and a
+destructor.Create some objects using the constructor with parameters, another one using the copy constructor
+as a clone object, displaying each time the attributes of the created object.Copy an object into another one,
+both being created.Display the result of the copy operation.Analyze the used methods.Make another
+implementation in which the name is given by a fixed character string or pseudo container string, and marks is
+a fixed size array specified by a constant, the no_marks attribute being removed
+*/
+
+#include<iostream>
+using namespace std;
+const int mSIZE= 3;
+
+class Student {
+        char name[30];
+        int* marks;
+public: 
+        void setName(char* aux) {
+                strcpy_s(name, aux);
+        }
+        char* getName() {
+                return name;
+        }
+        void setMarks(int* aux) {
+                for (int i{}; i < mSIZE; i++)
+                        marks[i] = aux[i];
+        }
+        int* getMarks() {
+                return marks;
+        }
+
+        Student( char *aux, int* n) {
+                strcpy_s(name, aux);
+
+                marks = new int[mSIZE];
+                int i;
+                for (i = 0; i < mSIZE; i++) {
+                        marks[i] = n[i];
+                }
+
+        }
+        Student() {
+                strcpy_s(name, "Nespecificat");
+                marks = new int[mSIZE];
+        }
+        Student(const Student& x) {
+                strcpy_s(name, x.name);
+        
+                marks = new int[mSIZE];
+                int i;
+                for (i = 0; i < mSIZE; i++)
+                        marks[i] = x.marks[i];
+        }
+
+        Student& operator=(Student& x) {
+
+                if (this != &x) {
+                        strcpy_s(name, x.name);
+                
+                        for (int i = 0; i < mSIZE; i++)
+                                marks[i] = x.marks[i];
+                }
+                return x;
+        }
+
+        
+        ~Student() {
+                if(marks!=NULL)
+                delete[] marks;
+        }
+};
+
+int main() {
+        char name[30];
+        int marks[mSIZE];
+        cout << "\n Enter the name of the student : ";
+        cin.getline(name, 30);
+        cout << "\nEnter the marks of the student ( " << mSIZE << ") :";
+        for (int i{}; i < mSIZE; i++)
+                cin >> marks[i];
+        
+        Student s1(name, marks);
+        cout << "\n\nData of the first obj \n Name  : " << s1.getName();
+        int*arr = s1.getMarks();
+        for (int i{}; i < mSIZE; i++)
+                cout << "\n" << arr[i] << " ";
+
+        Student s2(s1);
+        cout << "\n \nShowing data of the obj2(used copy const)\nName  : " << s2.getName();
+        cout << "\n Marks :  \t";
+        int * arr2 = s2.getMarks();
+        for (int i{}; i < mSIZE; i++)
+                cout  << arr2[i] << " ";
+        Student s3;
+        for (int i = 0; i < 2; i++)
+        {
+                if (i == 1)
+                {
+                        s3 = s2;
+                        cout << "\n\n Showing data of the obj3(after the assing operator )  ";
+                }
+                else cout << "\n\nShowing data of the obj3 before the assign operator !:";
+                cout << " \nName  : " << s3.getName();
+                cout << "\n Marks :  \t";
+                int* arr3 = s3.getMarks();
+                for (int i{}; i < mSIZE; i++)
+                        cout << arr3[i] << " ";
+        }
+}
+
+
+/*Cacu Razvan lab9 prb10
+Define a class named Number that has as private attribute a double variable. The class contains an 
+explicit empty constructor, a constructor with a parameter and an accessor method that displays the value of
+the stored variable. Write a class called Mathematics that has as attribute an instance created from the first 
+class and overloads the arithmetical operators (+, -, /, *). Each method calculates the appropriate result by 
+considering the data extracted from the Number object.
+*/
+
+#include <iostream>
+using namespace std;
+
+class Number {
+        double y;
+public:
+        void setVal(double aux) {
+                y = aux;
+        }
+
+        double getVal() {
+                return y;
+        }
+        
+        Number() { }
+        Number(double x) {
+                y = x;
+        }
+};
+class Mathematics {
+private:
+        Number n1;
+public:
+        
+        Mathematics(double a) {
+                n1.setVal(a);
+        }
+        Mathematics() 
+        { n1.setVal(1.f); }
+
+        Mathematics operator+( Mathematics& aux) {
+                Mathematics res;
+                res.n1.setVal(this->n1.getVal() + aux.n1.getVal());
+                return res;
+        }
+        Mathematics operator-( Mathematics& aux) {
+                Mathematics res;
+                res.n1.setVal(this->n1.getVal() - aux.n1.getVal());
+                return res;
+        }
+        Mathematics operator/( Mathematics& aux) {
+                Mathematics res;
+                res.n1.setVal(this->n1.getVal() /aux.n1.getVal());
+                return res;
+        }
+        Mathematics operator*( Mathematics& aux) {
+                Mathematics res;
+                res.n1.setVal(this->n1.getVal() * aux.n1.getVal());
+                return res;
+        }
+        Number getNr() {
+                return n1;
+        }
+
+};
+int main() {
+        double var;
+        cout << "\nEnter the first double  value : ";
+        cin >> var;
+        Mathematics x(var);
+        cout << "\nEnter the second double  value : ";
+        cin >> var;
+        Mathematics y(var);
+
+        Mathematics val = x + y;
+        Number n1 = val.getNr();
+        cout << "\nThe result of + : " << n1.getVal();
+        val = x - y;
+         n1 = val.getNr();
+        cout << "\nThe result of - : " << n1.getVal();
+        val = x * y;
+        n1 = val.getNr();
+        cout << "\nThe result of * : " << n1.getVal();
+        val = x / y;
+        n1 = val.getNr();
+        cout << "\nThe result of / : " << n1.getVal();
+}
+
+
+
+/*Cacu Razvan lab9 prb11
+Consider a class named Fraction that has two integer private attributes a and b for the denominator and
+nominator. Define set( ) and get( ) methods for all the class's attributes. Declare a method named simplify( )
+that simplifies a fraction. Consider a private static integer variable icount that will be initialized with 0 and
+incremented in the constructors. Declare two explicit constructors, one without parameters that initializes a
+with 0 and b with 1 and the other that has two integer parameters which will verify before if the fraction can be
+defined (b! =0). Define an explicit destructor that will display a message and the icount counter. Overload the
+arithmetic operators (+, -, *, /) using friend functions. The results will be displayed after being simplified.
+Instantiate 2 Fraction objects and read the appropriate data from the keyboard. Display the original values of
+the nominators and denominators. Using a specific accessor method, display the value of icount. Apply the
+implemented friend functions and initialize other 4 objects with the obtained results. Display the characteristics
+of the final objects and the value of icount.
+*/
+
+#include <iostream>
+#include<assert.h>
+using namespace std;
+
+int gcd(int, int);
+
+class Fraction {
+
+        int nominator, denominator;
+        static int icount;
+
+public:
+
+        Fraction() {
+                nominator = 0;
+                denominator = 1;
+                icount++;
+        };
+        Fraction(int a, int b) {
+                nominator = a;
+        denominator = b;
+                icount++;
+        }
+        void setNominator(int a) {
+                nominator = a;
+        }
+
+        int getNominator() {
+                return nominator;
+        }
+        void setDenominator(int b) {
+                this->denominator = b;
+        }
+        
+        int getDenominator() {
+                return denominator;
+        }
+        int getIcount() {
+                return icount;
+        }
+        ~Fraction() {
+                icount--;
+                cout << "\nThe value of icount is " << icount;
+        
+        }
+
+        friend Fraction& simplify(Fraction&);
+        friend Fraction& operator+(Fraction&, Fraction&);
+        friend Fraction& operator-(Fraction&, Fraction&);
+        friend Fraction& operator/(Fraction&, Fraction&);
+        friend Fraction& operator*(Fraction&, Fraction&);
+
+};
+
+int  Fraction::icount=0;
+
+
+int gcd(int a, int b) {
+        while (a != b)
+        {
+                if (a > b)
+                        a = a - b;
+                else
+                        b = b - a;
+        }
+        return a;
+}
+
+Fraction&simplify(Fraction& x) {
+        int aux = gcd(x.nominator, x.denominator);
+        x.nominator = x.nominator / aux;
+        x.denominator = x.denominator / aux;
+        return x;
+}
+
+
+Fraction& operator+(Fraction& x, Fraction& y) {
+        Fraction res;
+        
+                res.nominator = (x.getNominator() * y.getDenominator()) + (y.getNominator() * x.getDenominator());
+                res.denominator = (y.denominator * x.denominator);
+        
+    res=simplify(res);
+        return res;
+}
+
+Fraction& operator-(Fraction& f1, Fraction& f2) {
+        Fraction res;
+                res.nominator = (f1.nominator * f2.denominator) - (f2.nominator * f1.denominator);
+                res.denominator = (f2.denominator * f1.denominator);
+        res=simplify(res);
+        return res;
+}
+
+Fraction& operator/(Fraction& f1, Fraction& f2) {
+        Fraction res;
+        res.nominator=f1.nominator * f2.denominator;
+        res.denominator=f1.denominator * f2.nominator;
+        res=simplify(res);
+        return  res;
+}
+
+Fraction& operator*(Fraction& f1, Fraction& f2) {
+        Fraction res;
+        res.denominator = f1.getDenominator() * f2.getDenominator();
+        res.nominator = f1.getNominator() * f2.getNominator();
+        res=simplify(res);
+        return  res;
+}
+
+int main() {
+        Fraction f1, f2;
+        int var;
+        cout << "\n The nominator of the first fraction : ";
+        cin >> var;
+        f1.setNominator(var);
+        cout << "\n The denominator of the first fraction : ";
+        cin >> var;
+        assert(var != 0);
+        f1.setDenominator(var);
+        cout << "\n The nominator of the second fraction : ";
+        cin >> var;
+        f2.setNominator(var);
+        cout << "\n The denominator of the second fraction : ";
+        cin >> var;
+        assert(var != 0);
+        f2.setDenominator(var);
+        cout << "\nThe first fraction is : " <<f1.getNominator() << "/" << f1.getDenominator();
+        cout << "\nThe second  fraction is : " << f2.getNominator() << "/" << f2.getDenominator(); 
+        Fraction add = f1 + f2;
+        Fraction substract = f1 - f2;
+        Fraction product = f1 * f2;
+        Fraction division = f1 / f2;
+        cout << "\n The result of adding the 2 fractions is : " << add.getNominator() << "/" << add.getDenominator();
+        cout << "\n The result of substracting the 2 fractions is : " << substract.getNominator() << " / " << substract.getDenominator();
+        cout << "\n The result of  the product between  the 2 fractions is : " << product.getNominator() << "/" << product.getDenominator();
+        cout << "\n The result of the division between the 2 fractions is : " << division.getNominator() << "/" << division.getDenominator();
+
+}
